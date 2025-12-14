@@ -16,6 +16,7 @@ format:
 execute: 
   warning: false
   message: false
+  echo: false
 ---
 
 ```{r} 
@@ -39,10 +40,13 @@ gymq=gym[,-c(1,8)]
 
 
 # Introduction
+blabla on a un jeu de données composé de n = `r dim(gym)[1]` individus et p= `r dim(gym)[2]` variables. 
 
 # analyse uni-dimensionnelle et bi-dimensionnelle
 
 ## analyse unidimensionnelle
+
+On commence par définir les variables qualitative manuellement sur R avec as.factor
 
 ```{r}
 #| echo: false
@@ -138,7 +142,7 @@ mosaicplot(table_gym,
 ```
 
 
-Nous avons décider de représenter la répartition de niveau par genre car il est plus pertinent que la répartition de genre par niveau.
+Nous avons décidé de représenter la répartition de niveau par genre car il est plus pertinent que la répartition de genre par niveau.
 Pour les femmes comme pour les hommes, le niveau débutant et le niveau intermédiaire sont les plus fréquents, tandis que le niveau expert est le moins fréquent. Les proportions entre débutant, intermédiaire et expert semblent suivre une tendance assez similaire pour les deux genres.
 
 ### entre une variable quantitative une variable qualitative 
@@ -186,12 +190,60 @@ Ce graphique confirme la très forte corrélation entre les variables **duration
 ... a analyser
 
 
-# analyse en composante principale
-```{r}
+# analyse en composante principale (ACP)
 
+On a la possiblité de réaliser une ACP qu'on appelle centrée ou bien centrée-réduite.
+
+Comme son nom l'indique, la première consiste à utiliser des valeurs centrées (même moyenne à 0) et la deuxième, en plus d'avoir une moyenne à 0, réduit les valeurs pour avoir un même ordre de grandeur entre toutes les valeurs.
+On utilise pour centrer et réduire la fonction scale.
+
+
+
+```{r}
+#on centre les valeurs
+gymC<-scale(gym[,-c(1,8)],center=TRUE, scale=FALSE)
 ```
 
+```{r}
+respcaC<-PCA(gym,quali.sup=c(1,8),scale.unit = F,graph=F)
+respcaC$eig
+gg1<-fviz_eig(respcaC)
+   
+```
+
+```{r}
+#/echo:true
+respca<-PCA(gym,quali.sup=c(1,8),scale.unit = T,graph=F)
+respca$eig
+gg2<-fviz_eig(respca)
+#/echo: false
+grid.arrange(gg1,gg2,ncol=2)
+```
+La figure .. est centrée et la.. réduite. On remarque que dans la première, une dimension(cad une variable) s'exprime beaucoup trop et empêche la lecture des autres. Quand on réalise une ACP réduite, il devient alors possible de lire le reste des variables.
+On va donc continuer l'analyse sur une ACP centrée réduite.
+
+On observe à présent les COMPOSANTES PRINCIPALES et leur pourcentage d'inertie et inertie cumulative. On va s'intéresser aux 3 premières dimensions, car leur inertie cumulative est à 85,88%. Valeur qui nous permet de ne pas perdre beaucoup d'information, et de diminuer drastiquement la dimension des données. On pourra comparer avec une analyse avec la dim4 inluse, afin de vérifier que les informations importantes sont bien présentent dans notre modèle.
+
+```{r}
+respca$eig
+```
+Figure.. Graphe des individus dans le premier plan factoriel (dim1 et 2)et les suivants plans factoriels (dim1,3 et dim2,3)
 
 
+```{r}
+# A COMPLETER
+p1<-fviz_pca_ind(respca,geom="point")
+p2<-fviz_pca_ind(respca,axes=c(1,3),geom="point")
+p3<-fviz_pca_ind(respca,axes=c(2,3),geom="point")
+grid.arrange(p1,p2,p3,ncol=2)
+```
+Figure... On voit que pour une centrée tout court on ne visualise rien du tout. //à pas mettre sur rapport.
+```{r}
+
+
+grid.arrange(fviz_pca_var(respca),fviz_pca_var(respcaC),ncol=2)
+```
+INTERPRÉTATIONS FINALES
+PARLER PLUS DES MÉTAVARIABLES
 # Références
 
