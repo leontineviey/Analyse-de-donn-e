@@ -29,7 +29,8 @@ library(gridExtra)
 library(knitr)
 library(reshape2)
 gym <- read.table("DataGym3MIC.txt",header=TRUE)
-gymq=gym[,-c(1.5)]
+gymq=gym[,-c(1,8)]
+
 
 ```
 
@@ -52,8 +53,8 @@ summary(gym)
 
 
 ```
-### analyse undimentionnel
-#### Pour une variable qualitative
+
+### Pour une variable qualitative
 Nous allons dans un premier temps nous interesser a la répartition des deux variables qualitatives: level et gender
 
 ```{r}
@@ -72,7 +73,7 @@ g2<-ggplot(df, aes(x="", y=value, fill=group))+
 
 grid.arrange(g1,g2,ncol=2)
 ```
-#### Pour une variable quantitative
+### Pour une variable quantitative
 
 nous allons maintenant analyser les variables quantitatives du jeux de donnée.
 ```{r}
@@ -110,8 +111,9 @@ geom_density(color = "red", linewidth = 1) +
 Sur cet histogramme de densité, nous pouvons observer que la majorité des adhérents de la salle de sport a un poids compris entre 50 et 90 kg. On note également la présence de quelques personnes ayant un poids plus élevé dans l'échantillon (jusqu'à 130kg). 
 
 
-### analyse bidimensionnel
-#### entre 2 variables qualitatives
+
+## analyse bidimensionnel
+### entre 2 variables qualitatives
 
 Nous nous intéressons dans cette partie a la corrélation deux variables qualitatives **level** et **gender**.
 
@@ -139,22 +141,50 @@ mosaicplot(table_gym,
 Nous avons décider de représenter la répartition de niveau par genre car il est plus pertinent que la répartition de genre par niveau.
 Pour les femmes comme pour les hommes, le niveau débutant et le niveau intermédiaire sont les plus fréquents, tandis que le niveau expert est le moins fréquent. Les proportions entre débutant, intermédiaire et expert semblent suivre une tendance assez similaire pour les deux genres.
 
-#### entre une variable quantitative une variable qualitative 
-#### entre 2 variables quantitatives
+### entre une variable quantitative une variable qualitative 
+### entre 2 variables quantitatives
 
 ```{r}
+#| echo: false
 corrplot(cor(gymq),
          method = "ellipse",
          type = "upper",
          order = "hclust",
          title = "Matrice de Corrélation ",
-         mar = c(0, 0, 1, 0), # Ajustement des marges pour le titre
+         mar = c(0, 0, 1, 0), 
          tl.cex = 0.8,
-         addCoef.col = "black", # Ajoute les coefficients
          number.cex = 0.6)
 ```
 
-Cette visualisation représente les coefficients de corrélation de Pearson entre les variables quantitatives du jeu de données.L'association la plus forte est observée entre la durée de l'entraînement et les calories brûlées (dépendance quasi-parfaite). Inversement, le pourcentage de graisse corporelle est fortement associé à un faible niveau d'expérience et de performance. La taille est un facteur neutre, car elle est sans association linéaire avec la performance ou le niveau.
+Cette visualisation représente les coefficients de corrélation de Pearson entre les variables quantitatives du jeu de données.
+L'association la plus forte est observée entre la durée de l'entraînement et les calories brûlées (dépendance quasi-parfaite).Nous pouvons également observer une forte corrélation positive entre l'imc et le poids.
+La variable fat est fortement corrélée négativement avec duration, calories et water. 
+
+Nous allons maintenant explorer graphiquement certaines de ces corrélations bidimensionnelles.
+
+```{r}
+g1=ggplot(gym, aes(x = duration, y = calories)) +
+  geom_point() +                      
+  geom_smooth(method = "lm") +         
+  labs(title = "Calories brûlées en fonction de la Durée",
+       x = "Durée",
+       y = "Calories") 
+g2=ggplot(gym, aes(x = duration, y = fat)) +
+  geom_point() +                      
+  geom_smooth(method = "lm") +         
+  labs(title = "graisse corporel en fonction de la durée",
+       x = "durée",
+       y = "graisse") 
+
+grid.arrange(g1,g2,ncol=2)
+
+```
+Ce graphique confirme la très forte corrélation entre les variables **duration** et **calories**. Ces observations ne sont pas étonnates car La dépense énergétique (calories) est, par définition physique, une fonction du temps. 
+
+
+...
+
+
 # analyse en composante principale
 ```{r}
 
