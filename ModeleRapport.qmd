@@ -1,135 +1,4 @@
-<<<<<<< HEAD
 ---
-title: "Rapport"
-author: 
-  - name: "Manas Chloé"
-  - name: "Viet Léontine"
-date: "`r Sys.Date()`"
-bibliography: exbiblio.bib
-format: 
-  pdf:
-    toc: TRUE
-    toc_depth: 2
-    number-sections: true
-    header-includes:
-    - \usepackage{color}
-    - \newcommand{\X}{\mathbf{X}}
-execute: 
-  warning: false
-  message: false
----
-
-```{r} 
-#| echo: false
-
-library(ggplot2)
-library(corrplot)
-library(FactoMineR)
-library(factoextra)
-library(gridExtra)
-library(knitr)
-library(reshape2)
-gym <- read.table("DataGym3MIC.txt",header=TRUE)
-gymq=gym[,-c(1.5)]
-
-```
-
-\vspace{1cm}
-
-
-
-# Introduction
-
-# analyse uni-dimensionnelle et bi-dimensionnelle
-
-## analyse unidimensionnelle
-
-```{r}
-#| echo: false
-gym$gender<-as.factor(gym$gender)
-gym$level<-factor(gym$level,labels=c("débutant","intermédiaire","expert"))
-summary(gym)
-
-
-```
-### analyse undimentionnel
-#### Pour une variable qualitative
-Nous allons dans un premier temps nous interesser a la répartition des deux variables qualitatives: level et gender
-
-```{r}
-#| echo: false
-g1<-ggplot(gym, aes(x=gender))+ 
-  geom_bar()+
-  ylab("")+
-  ggtitle("Effectifs")
-
-df <- data.frame(group = levels(gym$level),
-                 value = as.vector(table(gym$level))/nrow(gym))
-g2<-ggplot(df, aes(x="", y=value, fill=group))+
-  geom_bar(width = 1, stat = "identity")+ 
-  coord_polar("y", start=0)+ 
-  theme(legend.position="bottom")
-
-grid.arrange(g1,g2,ncol=2)
-```
-#### Pour une variable quantitative
-
-nous allons maintenant analyser les variables quantitatives du jeux de donnée.
-```{r}
-#| echo: false
-gymx1<-melt(gym[,-c(1,3,4,5,7,8)])
-g3=ggplot(gymx1,aes(x=variable,y=value))+
-  geom_boxplot()
-gymx2<-melt(gym[,-c(1,2,5,6,9)])
-g5=ggplot(gymx2,aes(x=variable,y=value))+
-  geom_boxplot()
-
-
-g4=ggplot(gym,aes(y=calories))+
-  geom_boxplot()
-
-grid.arrange(g3,g5,g4,ncol=3)
-```
-Ces graphiques en boîtes illustrent la tendance centrale (médiane), la dispersion (écart interquartile) ainsi que la présence de valeurs aberrantes pour plusieurs variables d'un ensemble de données. Ils permettent de souligner une forte variabilité pour le poids et les calories, et une plus grande concentration pour la taille, l'IMC et la matière grasse.
-
-Nous allons maintenant représenter la variable Weight pour mieux observer cette disparité
-
-```{r}
-#| echo: false
-ggplot(gym,aes(x=weight))+
-  geom_histogram(aes(y=..density..),bins=15,color="black", fill="skyblue")+
-  ggtitle("Histo. des fréquences")+
-  ylab("Density")+xlab("weight")+
-
-geom_density(color = "red", linewidth = 1) +
-  labs(title = "Histogramme de Densité du Poids",
-       x = "Poids (kg)",
-       y = "Densité") +
-  theme_minimal()
-```
-Sur cet histogramme de densité, nous pouvons observer que la majorité des adhérents de la salle de sport a un poids compris entre 50 et 90 kg. On note également la présence de quelques personnes ayant un poids plus élevé dans l'échantillon (jusqu'à 130kg). 
-
-
-### analyse bidimensionnel
-#### entre 2 variables qualitatives
-
-
-
-#### entre une variable quantitative une variable qualitative 
-#### entre 2 variables quantitatives
-
-
-# analyse en composante principale
-```{r}
-#| echo: false
-
-```
-
-
-
-# Références
-
-=======
 title: "Rapport analyse de donnée"
 author: 
   - name: "Manas Chloé"
@@ -175,6 +44,7 @@ gymq=gym[,-c(1.5)]
 ## analyse unidimensionnelle
 
 ```{r}
+#| echo: false
 
 gym$gender<-as.factor(gym$gender)
 gym$level<-factor(gym$level,labels=c("débutant","intermédiaire","expert"))
@@ -187,6 +57,7 @@ summary(gym)
 Nous allons dans un premier temps nous interesser a la répartition des deux variables qualitatives: level et gender
 
 ```{r}
+#| echo: false
 g1<-ggplot(gym, aes(x=gender))+ 
   geom_bar()+
   ylab("")+
@@ -205,6 +76,7 @@ grid.arrange(g1,g2,ncol=2)
 
 nous allons maintenant analyser les variables quantitatives du jeux de donnée.
 ```{r}
+#| echo: false
 gymx1<-melt(gym[,-c(1,3,4,5,7,8)])
 g3=ggplot(gymx1,aes(x=variable,y=value))+
   geom_boxplot()
@@ -223,6 +95,7 @@ Ces graphiques en boîtes illustrent la tendance centrale (médiane), la dispers
 Nous allons maintenant représenter la variable Weight pour mieux observer cette disparité
 
 ```{r}
+#| echo: false
 ggplot(gym,aes(x=weight))+
   geom_histogram(aes(y=..density..),bins=15,color="black", fill="skyblue")+
   ggtitle("Histo. des fréquences")+
@@ -240,12 +113,48 @@ Sur cet histogramme de densité, nous pouvons observer que la majorité des adh�
 ### analyse bidimensionnel
 #### entre 2 variables qualitatives
 
+Nous nous intéressons dans cette partie a la corrélation deux variables qualitatives **level** et **gender**.
 
+```{r} 
+#| echo: false
+# Crée la table de contingence
+table_gym <- table(gym$gender, gym$level)
+
+profils_lignes <- prop.table(table_gym, margin = 1)
+
+
+
+mosaicplot(table_gym,
+           main = "Profils-lignes : Répartition de niveau par genre",
+           xlab = "Proportion de niveau conditionnelle",
+           ylab = "genre",
+           color = TRUE,
+           las = 1, 
+           cex.axis = 0.8)
+           
+
+```
+
+
+Nous avons décider de représenter la répartition de niveau par genre car il est plus pertinent que la répartition de genre par niveau.
+Pour les femmes comme pour les hommes, le niveau débutant et le niveau intermédiaire sont les plus fréquents, tandis que le niveau expert est le moins fréquent. Les proportions entre débutant, intermédiaire et expert semblent suivre une tendance assez similaire pour les deux genres.
 
 #### entre une variable quantitative une variable qualitative 
 #### entre 2 variables quantitatives
 
+```{r}
+corrplot(cor(gymq),
+         method = "ellipse",
+         type = "upper",
+         order = "hclust",
+         title = "Matrice de Corrélation ",
+         mar = c(0, 0, 1, 0), # Ajustement des marges pour le titre
+         tl.cex = 0.8,
+         addCoef.col = "black", # Ajoute les coefficients
+         number.cex = 0.6)
+```
 
+Cette visualisation représente les coefficients de corrélation de Pearson entre les variables quantitatives du jeu de données.L'association la plus forte est observée entre la durée de l'entraînement et les calories brûlées (dépendance quasi-parfaite). Inversement, le pourcentage de graisse corporelle est fortement associé à un faible niveau d'expérience et de performance. La taille est un facteur neutre, car elle est sans association linéaire avec la performance ou le niveau.
 # analyse en composante principale
 ```{r}
 
@@ -255,4 +164,3 @@ Sur cet histogramme de densité, nous pouvons observer que la majorité des adh�
 
 # Références
 
->>>>>>> 9b393a52cbfde9e9fc45dc0ab3c03f7b6d0c5147
