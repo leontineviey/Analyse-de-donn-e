@@ -133,7 +133,7 @@ Nous nous intéressons dans cette partie a la corrélation deux variables qualit
 
 ```{r} 
 #| echo: false
-#| fig-cap: "mosai plots des profils lignes entre les niveaux et les genres"
+#| fig-cap: "mosaic plots des profils lignes entre les niveaux et les genres"
 #| label: "fig-4"
 # Crée la table de contingence
 table_gym <- table(gym$gender, gym$level)
@@ -158,7 +158,71 @@ Dans la @fig-4, nous avons décidé de représenter la répartition de niveau pa
 Pour les femmes comme pour les hommes, le niveau débutant et le niveau intermédiaire sont les plus fréquents, tandis que le niveau expert est le moins fréquent. Les proportions entre débutant, intermédiaire et expert semblent suivre une tendance assez similaire pour les deux genres.
 
 ### entre une variable quantitative une variable qualitative 
+```{r}
+#| echo: false
+#| fig-cap: "mosaic plots des profils lignes entre les niveaux et les genres"
+#| label: "fig-10"
 
+g1=ggplot(gym,aes(x=level,y=water))+
+geom_boxplot()+
+  labs(
+    title = "Distribution du Poids (weight) par Niveau ",
+    x = "Niveau",
+    y = "eau",
+    fill = "Niveau"
+  ) +
+  theme_minimal()
+
+g2=ggplot(gym,aes(x=level,y=calories))+
+geom_boxplot()+
+  labs(
+    title = "boxplot de différents variables pour chaque modalité de la variable qualitative **level**",
+    x = "Niveau",
+    y = "calories",
+    fill = "Niveau"
+  ) +
+  theme_minimal()
+
+g3=ggplot(gym,aes(x=level,y=duration))+
+geom_boxplot()+
+  labs(
+    title = "Distribution de la durée par Niveau",
+    x = "Niveau",
+    y = "durée",
+    fill = "Niveau"
+  ) +
+  theme_minimal()
+
+
+grid.arrange(g1,g2,g3,ncol=3)
+```
+
+La @fig-10 représente différents diagrammes en boîte (boxplots) montrant une corrélation positive et marquée entre les variables quantitatives **water**, **calories** et **duration** avec la variable qualitative **level**.
+
+Nous pouvons donc observer que plus le niveau de pratique est élevé, plus la durée de l'entraînement est longue et plus les calories brûlées sont élevées. Cela est par conséquent conforme aux attentes.
+
+De plus, la quantité d'eau consommée est également liée à cette variable. Cela peut s'expliquer par le fait que les sessions sont plus longues, mais également parce que les personnes sportives font plus attention à leur consommation d'eau.
+
+```{r}
+ggplot(data=gym) +
+  geom_violin(aes(x=gender,y=fat))+
+   geom_point(aes(x=gender,y=fat), col = "blue", alpha = 0.2,position="jitter")
+
+ggplot(data = gym) +
+  geom_point(aes(x = gender, 
+                 y = water, 
+                
+                 color = level),
+             position = position_jitter(width = 0.3), # Ajoute un léger décalage horizontal pour voir les points
+             alpha = 0.7) +
+  
+ 
+  scale_x_discrete(name = "Genre") +
+  scale_y_continuous(name = "eau") +
+  labs(color = "Niveau d'Intensité",
+       title = "Calories Brûlées et Niveau selon le Genre")
+```
+Le graphique @fig-11 met en évidence une disparité marquée dans la distribution de la variable "water" selon le genre. On constate un décalage clair : les Hommes présentent des valeurs supérieures et une plus grande dispersion de cet indicateur. Inversement, la répartition pour les Femmes est centrée sur des valeurs inférieures et montre un étalement plus faible.
 
 ### entre deux variables quantitatives
 
