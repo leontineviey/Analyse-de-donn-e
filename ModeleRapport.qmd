@@ -163,6 +163,7 @@ La variable fat est fortement corrélée négativement avec duration, calories e
 Nous allons maintenant explorer graphiquement certaines de ces corrélations bidimensionnelles.
 
 ```{r}
+#| echo: false
 g1=ggplot(gym, aes(x = duration, y = calories)) +
   geom_point() +                      
   geom_smooth(method = "lm") +         
@@ -182,7 +183,7 @@ grid.arrange(g1,g2,ncol=2)
 Ce graphique confirme la très forte corrélation entre les variables **duration** et **calories**. Ces observations ne sont pas étonnates car La dépense énergétique (calories) est, par définition physique, une fonction du temps. 
 
 
-...
+... a analyser
 
 
 # analyse en composante principale
