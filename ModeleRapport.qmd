@@ -41,6 +41,8 @@ gymq=gym[,-c(1,8)]
 
 # Introduction
 blabla on a un jeu de données composé de n = `r dim(gym)[1]` individus et p= `r dim(gym)[2]` variables. 
+a pas oublier : identifier nature des variables qualitative nominale/ordinale, quantitative discr`ete/continue*
+~nous avons fait un choix parmis les graphiques afin de rendre un rapport le plus ... possible. certain graphique n'apparaityrons pas mais sont présent dans les ficher quarto 
 
 # analyse uni-dimensionnelle et bi-dimensionnelle
 
@@ -160,24 +162,14 @@ Pour les femmes comme pour les hommes, le niveau débutant et le niveau intermé
 ### entre une variable quantitative une variable qualitative 
 ```{r}
 #| echo: false
-#| fig-cap: "mosaic plots des profils lignes entre les niveaux et les genres"
+#| fig-cap: "boxplot de différents variables pour chaque modalité de la variable qualitative **level**"
 #| label: "fig-10"
 
-g1=ggplot(gym,aes(x=level,y=water))+
-geom_boxplot()+
-  labs(
-    title = "Distribution du Poids (weight) par Niveau ",
-    x = "Niveau",
-    y = "eau",
-    fill = "Niveau"
-  ) +
-  theme_minimal()
 
 g2=ggplot(gym,aes(x=level,y=calories))+
 geom_boxplot()+
   labs(
-    title = "boxplot de différents variables pour chaque modalité de la variable qualitative **level**",
-    x = "Niveau",
+    title = "Distribustion des calories par Niveau",
     y = "calories",
     fill = "Niveau"
   ) +
@@ -187,42 +179,86 @@ g3=ggplot(gym,aes(x=level,y=duration))+
 geom_boxplot()+
   labs(
     title = "Distribution de la durée par Niveau",
-    x = "Niveau",
     y = "durée",
     fill = "Niveau"
   ) +
   theme_minimal()
 
 
-grid.arrange(g1,g2,g3,ncol=3)
+grid.arrange (g2,g3,ncol=2)
 ```
 
-La @fig-10 représente différents diagrammes en boîte (boxplots) montrant une corrélation positive et marquée entre les variables quantitatives **water**, **calories** et **duration** avec la variable qualitative **level**.
+La @fig-10 représente différents diagrammes en boîte (boxplots) montrant une corrélation positive et marquée entre les variables quantitatives **calories** et **duration** avec la variable qualitative **level**.
+De plus nous pouvons observer dans les deux graphiques une variance plus importante chez les débutants.
 
 Nous pouvons donc observer que plus le niveau de pratique est élevé, plus la durée de l'entraînement est longue et plus les calories brûlées sont élevées. Cela est par conséquent conforme aux attentes.
 
-De plus, la quantité d'eau consommée est également liée à cette variable. Cela peut s'expliquer par le fait que les sessions sont plus longues, mais également parce que les personnes sportives font plus attention à leur consommation d'eau.
-
 ```{r}
-ggplot(data=gym) +
-  geom_violin(aes(x=gender,y=fat))+
-   geom_point(aes(x=gender,y=fat), col = "blue", alpha = 0.2,position="jitter")
+#| echo: false
+
+#ggplot(data=gym) +
+#  geom_violin(aes(x=gender,y=fat))+
+#   geom_point(aes(x=gender,y=fat), col = "blue", alpha = 0.2,position="jitter")
 
 ggplot(data = gym) +
   geom_point(aes(x = gender, 
                  y = water, 
                 
                  color = level),
-             position = position_jitter(width = 0.3), # Ajoute un léger décalage horizontal pour voir les points
+             position = position_jitter(width = 0.3), 
              alpha = 0.7) +
   
  
   scale_x_discrete(name = "Genre") +
   scale_y_continuous(name = "eau") +
   labs(color = "Niveau d'Intensité",
-       title = "Calories Brûlées et Niveau selon le Genre")
+       title = "Eau consommé selon le Niveau et le Genre")
 ```
-Le graphique @fig-11 met en évidence une disparité marquée dans la distribution de la variable "water" selon le genre. On constate un décalage clair : les Hommes présentent des valeurs supérieures et une plus grande dispersion de cet indicateur. Inversement, la répartition pour les Femmes est centrée sur des valeurs inférieures et montre un étalement plus faible.
+Le graphique @fig-11 est un nuage de points permettant de comparer la quantité d'eau consommée pendant une séance, en fonction du genre et du niveau. La différence la plus importante est liée au genre: les hommes ont une consommation d'eau plus élevée que les femmes (entre 2 et 3,75 pour les hommes contre 1,5 à 2,75 pour les femmes).De plus, le niveau expert (bleu) est le seul niveau d'intensité qui se distingue nettement des deux autres.Il n'y a pas de tendance claire montrant que les intermédiaires consomment significativement plus que les débutants.
+
+```{r}
+#| echo: false
+#| eval: false
+
+# nuage de point qui permet d'observer les différences importantes de durée d'entrainement en fonction du niveau. Cependant on peut également noter que le genre n'influence pas cette variable
+ggplot(data = gym) +
+  geom_point(aes(x = gender, 
+                 y = duration, 
+                
+                 color = level),
+             position = position_jitter(width = 0.3), 
+             alpha = 0.7) +
+  
+ 
+  scale_x_discrete(name = "Genre") +
+  scale_y_continuous(name = "durée") +
+  labs(color = "Niveau d'Intensité",
+       title = "durée de l'entrainement selon le Niveau et le Genre")
+```
+
+
+```{r}
+
+#| echo: false
+
+ggplot(gym, aes(x = level, y = fat, fill = gender)) +
+  
+  
+  geom_boxplot(position = position_dodge(0.8), width = 0.7) +
+  
+  labs(
+    title = "Distribution du pourcentage de graisse corporelle selon le niveau et le genre",
+    x = "Niveau",
+    y = "Pourcentage de Graisse Corporelle (FAT)",
+    fill = "Genre" # Titre de la légende de remplissage
+  ) +
+  
+  theme_minimal() +
+  
+  scale_fill_manual(values = c("Female" = "#F8766D", "Male" = "#00BFC4"))
+
+```
+voir si on le garde ou pas en fonction de la longueur du rapport
 
 ### entre deux variables quantitatives
 
@@ -248,28 +284,61 @@ Nous allons maintenant explorer graphiquement certaines de ces corrélations bid
 
 ```{r}
 #| echo: false
-#| fig-cap: "Distribution des effectifs selon le sexe (gauche) et le niveau de pratique (droite)"
-#| label: "fig-6"
+#| fig-cap: "Corrélation positive entre deux variables quantitatives"
+#| label: "fig-f6"
 g1=ggplot(gym, aes(x = duration, y = calories)) +
-  geom_point() +                      
-  geom_smooth(method = "lm") +         
+  geom_point(alpha = 0.6, size = 2, color = "purple") + 
+  geom_smooth(method = "lm", color = "red") +         
   labs(title = "Calories brûlées en fonction de la Durée",
-       x = "Durée",
+       x = "Durée  (h)",
        y = "Calories") 
-g2=ggplot(gym, aes(x = duration, y = fat)) +
-  geom_point() +                      
-  geom_smooth(method = "lm") +         
-  labs(title = "graisse corporel en fonction de la durée",
-       x = "durée",
-       y = "graisse") 
 
-grid.arrange(g1,g2,ncol=2)
+
+g3=ggplot(gym, aes(x = weight, y = bmi)) +
+  
+  
+  geom_point(alpha = 0.6, size = 2, color = "orange") +
+  geom_smooth(method = "lm", color = "red") +
+  labs(
+    title = "Poids en fonction de l'imc",
+    x = "Poids (kg)",
+    y = "indice de masse coporelle (IMC)"
+  ) +
+
+  theme_minimal()
+
+
+grid.arrange(g1,g3,ncol=2)
 
 ```
-La @fig-6 confirme la très forte corrélation entre les variables **duration** et **calories**. Ces observations ne sont pas étonnates car La dépense énergétique (calories) est, par définition physique, une fonction du temps. 
+Dans la @fig-f6 nous pouvons observeux deux nuages de points montrant une corrélation positive et forte entre les variables.
+Le graphique de gauche confirme la très forte corrélation entre les variables **duration** et **calories**. Ces observations ne sont pas étonnates car La dépense énergétique (calories) est, par définition physique, une fonction du temps. 
+Le graphique de droite montre quant à lui la forte corrélation entre le poids et l'IMC.C'est une relation attendue, car le poids est un facteur déterminant dans le calcul de l'IMC (IMC = $\text{Poids} / (\text{Taille}^2)$)
 
+```{r}
+#| echo: false
+#| eval: false
+ggplot(gym, aes(x = duration, y = fat)) +
+  geom_point(alpha = 0.6, size = 2, color = "blue") +
+  geom_smooth(method = "lm") +         
+  labs(title = "graisse corporel en fonction de la durée",
+       x = "durée (h)",
+       y = "graisse") 
 
-... a analyser
+```
+```{r}
+ggplot(gym, aes(x = fat, y = calories)) +
+  geom_point(alpha = 0.6, size = 2, color = "pink") +
+  geom_smooth(method = "lm", color = "darkred") +
+  labs(
+    title = "Graisse corporelle en fonction des calories brûlées",
+    x = "Pourcentage de graisse corporelle (%)",
+    y = "Calories brûlées"
+  ) +
+  
+  theme_minimal()
+```
+
 
 # Statistiques multidimensionnelles
 
