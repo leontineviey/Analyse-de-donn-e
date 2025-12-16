@@ -83,11 +83,11 @@ g2<-ggplot(df, aes(x="", y=value, fill=group))+
 grid.arrange(g1,g2,ncol=2)
 
 ```
-La @fig-1 représente deux graphique différents. Le diagramme en bâtons (à gauche) illustre la répartition de l'échantillon selon le genre.La distribution est relativement équilibrée, bien que le genre "Male" prédomine légèrement.Le diagramme en secteur (à droite), illustre la répartition proportionnelle des individus selon trois niveaux de compétence. Nous pouvons observer que les catégories "débutant" et "intermédaire" sont plus importants que "expert"
+La @fig-1 représente deux graphiques différents. Le diagramme en bâtons (à gauche) illustre la répartition de l'échantillon selon le genre. La distribution est relativement équilibrée, bien que le genre "Male" prédomine légèrement. Le diagramme en secteur (à droite), illustre la répartition proportionnelle des individus selon trois niveaux de compétence. Nous pouvons observer que les catégories "débutant" et "intermédaire" sont plus importants que "expert"
 
 ### Pour une variable quantitative
 
-nous allons maintenant analyser les variables quantitatives du jeux de donnée.
+Nous allons maintenant analyser les variables quantitatives du jeux de donnée.
 ```{r}
 #| echo: false
 #| fig-cap: "Distribution des variables quantitatives représenté sous forme de boxplot"
@@ -111,7 +111,7 @@ Nous allons maintenant représenter la variable Weight pour mieux observer cette
 
 ```{r}
 #| echo: false
-#| fig-cap: "historigramme représentant la sensité en fonction du poids"
+#| fig-cap: "Historigramme représentant la densité en fonction du poids"
 #| label: "fig-3"
 ggplot(gym,aes(x=weight))+
   geom_histogram(aes(y=..density..),bins=15,color="black", fill="skyblue")+
@@ -124,18 +124,18 @@ geom_density(color = "red", linewidth = 1) +
        y = "Densité") +
   theme_minimal()
 ```
-Sur l'histogramme de densité de la @fig-3, nous pouvons observer que la majorité des adhérents de la salle de sport a un poids compris entre 50 et 90 kg. On note également la présence de quelques personnes ayant un poids plus élevé dans l'échantillon (jusqu'à 130kg). 
+Sur l'histogramme de densité de la @fig-3, nous pouvons observer que la majorité des adhérents de la salle de sport ont un poids compris entre 50 et 90 kg. On note également la présence de quelques personnes ayant un poids plus élevé dans l'échantillon (jusqu'à 130kg). 
 
 
 
 ## analyse bidimensionnel
 ### entre deux variables qualitatives
 
-Nous nous intéressons dans cette partie a la corrélation deux variables qualitatives **level** et **gender**.
+Nous nous intéressons dans cette partie a la corrélation des deux variables qualitatives **level** et **gender**.
 
 ```{r} 
 #| echo: false
-#| fig-cap: "mosaic plots des profils lignes entre les niveaux et les genres"
+#| fig-cap: "Mosaic plots des profils lignes entre les niveaux et les genres"
 #| label: "fig-4"
 # Crée la table de contingence
 table_gym <- table(gym$gender, gym$level)
@@ -162,10 +162,8 @@ Pour les femmes comme pour les hommes, le niveau débutant et le niveau intermé
 ### entre une variable quantitative une variable qualitative 
 ```{r}
 #| echo: false
-#| fig-cap: "boxplot de différents variables pour chaque modalité de la variable qualitative **level**"
-#| label: "fig-10"
-
-
+#| fig-cap: "Boxplot de différentes variables pour chaque modalité de la variable qualitative **level**"
+#| label: "fig-5"
 g2=ggplot(gym,aes(x=level,y=calories))+
 geom_boxplot()+
   labs(
@@ -188,14 +186,15 @@ geom_boxplot()+
 grid.arrange (g2,g3,ncol=2)
 ```
 
-La @fig-10 représente différents diagrammes en boîte (boxplots) montrant une corrélation positive et marquée entre les variables quantitatives **calories** et **duration** avec la variable qualitative **level**.
+La @fig-5 représente différents diagrammes en boîte (boxplots) montrant une corrélation positive et marquée entre les variables quantitatives **calories** et **duration** avec la variable qualitative **level**.
 De plus nous pouvons observer dans les deux graphiques une variance plus importante chez les débutants.
 
 Nous pouvons donc observer que plus le niveau de pratique est élevé, plus la durée de l'entraînement est longue et plus les calories brûlées sont élevées. Cela est par conséquent conforme aux attentes.
 
 ```{r}
 #| echo: false
-
+#| fig-cap: ""
+#| label: "fig-6"
 #ggplot(data=gym) +
 #  geom_violin(aes(x=gender,y=fat))+
 #   geom_point(aes(x=gender,y=fat), col = "blue", alpha = 0.2,position="jitter")
@@ -214,7 +213,7 @@ ggplot(data = gym) +
   labs(color = "Niveau d'Intensité",
        title = "Eau consommé selon le Niveau et le Genre")
 ```
-Le graphique @fig-11 est un nuage de points permettant de comparer la quantité d'eau consommée pendant une séance, en fonction du genre et du niveau. La différence la plus importante est liée au genre: les hommes ont une consommation d'eau plus élevée que les femmes (entre 2 et 3,75 pour les hommes contre 1,5 à 2,75 pour les femmes).De plus, le niveau expert (bleu) est le seul niveau d'intensité qui se distingue nettement des deux autres.Il n'y a pas de tendance claire montrant que les intermédiaires consomment significativement plus que les débutants.
+Le graphique @fig-6 est un nuage de points permettant de comparer la quantité d'eau consommée pendant une séance, en fonction du genre et du niveau. La différence la plus importante est liée au genre: les hommes ont une consommation d'eau plus élevée que les femmes (entre 2 et 3,75 pour les hommes contre 1,5 à 2,75 pour les femmes).De plus, le niveau expert (bleu) est le seul niveau d'intensité qui se distingue nettement des deux autres.Il n'y a pas de tendance claire montrant que les intermédiaires consomment significativement plus que les débutants.
 
 ```{r}
 #| echo: false
@@ -265,7 +264,7 @@ voir si on le garde ou pas en fonction de la longueur du rapport
 ```{r}
 #| echo: false
 #| fig-cap: "Matrice de corrélation de Pearson entre les variables quantitatives"
-#| label: "fig-5"
+#| label: "fig-7"
 corrplot(cor(gymq),
          method = "ellipse",
          type = "upper",
@@ -276,7 +275,7 @@ corrplot(cor(gymq),
          number.cex = 0.6)
 ```
 
-la visualisation de la @fig-5 représente les coefficients de corrélation de Pearson entre les variables quantitatives du jeu de données.L'intensité de la couleur et l'aplatissement des ellipses sont proportionnels à la force de la corrélation.
+la visualisation de la @fig-7 représente les coefficients de corrélation de Pearson entre les variables quantitatives du jeu de données.L'intensité de la couleur et l'aplatissement des ellipses sont proportionnels à la force de la corrélation.
 L'association la plus forte est observée entre la durée de l'entraînement et les calories brûlées (dépendance quasi-parfaite).Nous pouvons également observer une forte corrélation positive entre l'imc et le poids.
 La variable fat est fortement corrélée négativement avec duration, calories et water. 
 
@@ -285,7 +284,7 @@ Nous allons maintenant explorer graphiquement certaines de ces corrélations bid
 ```{r}
 #| echo: false
 #| fig-cap: "Corrélation positive entre deux variables quantitatives"
-#| label: "fig-f6"
+#| label: "fig-8"
 g1=ggplot(gym, aes(x = duration, y = calories)) +
   geom_point(alpha = 0.6, size = 2, color = "purple") + 
   geom_smooth(method = "lm", color = "red") +         
@@ -311,13 +310,15 @@ g3=ggplot(gym, aes(x = weight, y = bmi)) +
 grid.arrange(g1,g3,ncol=2)
 
 ```
-Dans la @fig-f6 nous pouvons observeux deux nuages de points montrant une corrélation positive et forte entre les variables.
+Dans la @fig-8 nous pouvons observeux deux nuages de points montrant une corrélation positive et forte entre les variables.
 Le graphique de gauche confirme la très forte corrélation entre les variables **duration** et **calories**. Ces observations ne sont pas étonnates car La dépense énergétique (calories) est, par définition physique, une fonction du temps. 
 Le graphique de droite montre quant à lui la forte corrélation entre le poids et l'IMC.C'est une relation attendue, car le poids est un facteur déterminant dans le calcul de l'IMC (IMC = $\text{Poids} / (\text{Taille}^2)$)
 
 ```{r}
 #| echo: false
 #| eval: false
+#| fig-cap: ""
+#| label: "fig-9"
 ggplot(gym, aes(x = duration, y = fat)) +
   geom_point(alpha = 0.6, size = 2, color = "blue") +
   geom_smooth(method = "lm") +         
@@ -327,6 +328,8 @@ ggplot(gym, aes(x = duration, y = fat)) +
 
 ```
 ```{r}
+#| fig-cap: ""
+#| label: "fig-10"
 ggplot(gym, aes(x = fat, y = calories)) +
   geom_point(alpha = 0.6, size = 2, color = "pink") +
   geom_smooth(method = "lm", color = "darkred") +
@@ -342,23 +345,31 @@ ggplot(gym, aes(x = fat, y = calories)) +
 
 # Statistiques multidimensionnelles
 
-On veut à présent traiter plus de 2 variables. On considèrera les variables quantitatives pour la suite.
+On s’intéresse à présent à l’analyse de jeux de données comportant plus de deux variables. Dans la suite, seules les variables quantitatives seront prises en compte.
 
 
 ## analyse en composante principale (ACP)
 
-Le principe de l'ACP est de se ramener à un espace de faible dimension en déformant le moins possible la réalité. Le nombre de dimensions initial correspond au nombre de variables quantitiatives. On va en créer des nouvelles, appelées *métavariables* ou bien *composantes principales*, inférieur en nombre.
-On a la possiblité de réaliser une ACP qu'on appelle centrée ou bien centrée-réduite.
+Le principe de l’analyse en composantes principales (ACP) est de représenter les données dans un espace de dimension plus faible, tout en conservant un maximum d’information issue des données initiales. L’objectif est donc de réduire la dimension du jeu de données en limitant la perte d’information.
 
-Comme son nom l'indique, la première consiste à utiliser des valeurs centrées (même moyenne à 0) et la deuxième, en plus d'avoir une moyenne à 0, réduit les valeurs pour avoir un même ordre de grandeur entre toutes les valeurs.
-On utilise pour centrer et réduire la fonction *scale*.
+Initialement, le nombre de dimensions correspond au nombre de variables quantitatives observées. L’ACP permet de construire de nouvelles variables, appelées *composantes principales*, moins nombreuses que les variables initiales. Chaque composante principale définit un axe du nouvel espace de représentation, appelé *espace factoriel*.
+
+### Choix de la méthode d'ACP
+#peut carrément réduire et expliquer en 3 phrases
+
+Il existe deux types principaux d’ACP : centrée et centrée-réduite.
+
+ACP centrée : les variables sont simplement centrées, c’est-à-dire que leur moyenne est ramenée à zéro.
+
+ACP centrée-réduite : les variables sont à la fois centrées et réduites, c’est-à-dire qu’elles ont une moyenne nulle et une variance égale à 1. Cette normalisation permet de mettre toutes les variables sur un même ordre de grandeur.
+#On utilise pour centrer et réduire les données la fonction *scale*.
+#Dans la pratique, on utilisera directement la fonction FactoMineR de R qui réalise les ACP.
 
 
 
 
 ```{r}
 #on centre les valeurs
-
 gymC<-scale(gym[,-c(1,8)],center=TRUE, scale=FALSE)
 ```
 
@@ -366,27 +377,43 @@ gymC<-scale(gym[,-c(1,8)],center=TRUE, scale=FALSE)
 respcaC<-PCA(gym,quali.sup=c(1,8),scale.unit = F,graph=F)
 #respcaC$eig
 gg1<-fviz_eig(respcaC)
-gg1
+
    
 ```
 
 ```{r}
+#| fig-cap: ""
+#| label: "fig-11"
 
 respca<-PCA(gym,quali.sup=c(1,8),scale.unit = T,graph=F)
 #respca$eig
 gg2<-fviz_eig(respca)
-gg2
 
-#grid.arrange(gg1,gg2,ncol=2)
+
+grid.arrange(gg1,gg2,ncol=2)
 ```
-La figure .. est centrée et la.. réduite. On remarque que dans la première, une dimension(cad une variable) s'exprime beaucoup trop et empêche la lecture des autres. Quand on réalise une ACP réduite, il devient alors possible de lire le reste des variables.
-On va donc continuer l'analyse sur une ACP centrée réduite.
+On obtient sur la @fig-11 une ACP centrée (à gauche) et une ACP centrée-réduite (à droite). On peut observer les composantes principales générées dans les deux cas.
 
-On observe à présent les COMPOSANTES PRINCIPALES et leur pourcentage d'inertie et inertie cumulative. On va s'intéresser aux 3 premières dimensions, car leur inertie cumulative est à 85,88%. Valeur qui nous permet de ne pas perdre beaucoup d'information, et de diminuer drastiquement la dimension des données. On pourra comparer avec une analyse avec la dim4 inluse, afin de vérifier que les informations importantes sont bien présentent dans notre modèle.
+On remarque que, dans le cas de l’ACP centrée (à gauche), la première composante domine fortement, ce qui rend la lecture des autres composantes difficile. Ce phénomène est dû à la variable calories, dont l’échelle, comme nous l’avions déjà observée sur la @fig-2, est beaucoup plus importante que celle des autres variables. On s’attendait donc à une première composante  fortement influencée par cette variable.
+
+Il est donc nécessaire de continuer l'étude en utilisant une ACP centrée- réduite.
+
+### ACP centrée réduite
+
+
+On s’intéresse à présent au concept d’**inertie**, notion centrale en analyse en composantes principales, qui permet de quantifier la quantité d’information contenue dans les données et de guider le choix du nombre de dimensions à conserver.
+
+L’inertie totale correspond à la dispersion globale des individus et peut être décomposée en **inerties axiales**, chacune associée à une composante principale. Pour chaque axe, on calcule ainsi la **part d’inertie expliquée**, ainsi que l’**inertie cumulée**, qui mesure la proportion d’information conservée lorsque plusieurs dimensions sont prises en compte.
+Dans cette étude, nous retenons les trois premières dimensions, dont l’inertie cumulée atteint 85,88 % ( @fig-12 ). Ce choix permet de conserver l’essentiel de l’information initiale tout en réduisant significativement la dimension des données, ce qui facilite leur visualisation et leur interprétation
+
+On pourra aussi envisager d’ajouter une quatrième dimension pour vérifier que les informations importantes sont bien prises en compte dans le modèle. **À VOIR**
 
 ```{r}
+#| fig-cap: ""
+#| label: "fig-12"
 respca$eig
 ```
+
 Figure.. Graphe des individus dans le premier plan factoriel (dim1 et 2)et les suivants plans factoriels (dim1,3 et dim2,3)
 
 
