@@ -413,9 +413,10 @@ On pourra aussi envisager d’ajouter une quatrième dimension pour vérifier qu
 respca$eig
 ```
 La Figure @fig-13 représente le taux de corrélation entre les variables quantitatives initiales et les composantes principales formées. 
-Ainsi le premiere axe (Dim1) sera positivement corrélé à la variable *fat* et négativement à *duration*, *calories* et *water*.
-Le deuxième axe (Dim2) est négativement corrélé au *bmi* et *weight*.
-**À TERMINER DE COMPRENDRE ET CONFIRMER**
+Ainsi le premiere axe (Dim1) sera négativement corrélé à la variable *fat* et positivement à *duration*, *calories* et *water*.
+Le deuxième axe (Dim2) est positivement corrélé au *bmi* et *weight*.
+**À TERMINER DE rédiger au propre et détailleé**
+
 #fig13 weight et bmi très positivement correlé, calories duration aussi entre elles,
 ```{r}
 #| fig-cap: ""
@@ -444,18 +445,34 @@ corrplot(respca$var$cor, method="ellipse")
 
 ```{r}
 #Axes 1 et 2
+#| fig-cap: ""
+#| label: "fig-15"
 d1<-fviz_pca_ind(respca,geom="point",habillage=as.factor(gym$gender))
 d2<-fviz_pca_ind(respca,geom="point",habillage=as.factor(gym$level))
 d1
-d2
+#d2 POUR COMPRENDRE LIGNE DROITE QUI VIENT D'EXPERT
 #Axes 1 et 3
+#| fig-cap: ""
+#| label: "fig-16"
 d3<-fviz_pca_ind(respca,axes=c(1,3),geom="point", habillage=as.factor(gym$gender))
 d4<-fviz_pca_ind(respca,axes=c(1,3),geom="point", habillage=as.factor(gym$level))
 d3
 d4
 ```
 
+Dans la Figure @fig-15, on observe la dispersion des individus selon le genre sur le plan factoriel défini par les dimensions 1 et 2. En se référant à la Figure @fig-14, on peut interpréter les tendances observées : les valeurs négatives sur la dimension 1 correspondent à des profils présentant un pourcentage de masse grasse (fat) plus élevé, tandis que les valeurs positives sur la dimension 2 sont associées à des individus ayant un poids (weight) et un indice de masse corporelle (BMI) plus importants. Les valeurs positives sur la dimension 1 sont corelées positivement à la duration de l'entraînement et les calories brulées, corelées à la fois négativement sur la dimension 2.
 
+La coloration selon le genre met en évidence deux nuages de points de forme similaire, mais légèrement décalés le long d’une diagonale ascendante. Ce décalage suggère que les hommes ont, en moyenne, un poids et un BMI plus élevés que les femmes. À l’inverse, les femmes semblent présenter un pourcentage de masse grasse (*fat*) plus important.
+
+La représentation met également en évidence une structure marquée le long d’une diagonale orientée vers le bas à droite, déjà présente indépendamment de la variable de coloration. Lorsque la coloration est effectuée en fonction du niveau (*level*) plutôt que du genre, on identifie plus clairement que cette structure est principalement portée par les individus experts. Ces derniers se distinguent par des séances d’entraînement plus longues et une dépense calorique plus élevée que les individus de niveau intermédiaire ou débutant. Le décalage observé traduit également des différences de pratique entre hommes et femmes, les premiers ayant tendance à s’entraîner plus longtemps et à brûler davantage de calories.
+
+On change ensuite de plan factoriel pour analyser les dimensions 1 et 3. D’après la Figure @fig-13, la dimension 3 est fortement corrélée négativement avec la taille (*height*) et positivement avec l’indice de masse corporelle (*BMI*).
+
+Les observations de la Figure @fig-16 apparaissent globalement moins nettes que celles du plan (Dim 1, Dim 2). Avec une coloration selon le genre, on distingue surtout une tendance des femmes à se projeter davantage vers les valeurs positives de la dimension 1, associées à des valeurs plus élevées de BMI, tandis que les hommes, en moyenne plus grands, tendent à se projeter vers le bas du graphique. Cette séparation reste toutefois peu marquée et s’explique sans doute par le fait que les hommes sont, en moyenne, plus grands que les femmes. La coloration selon le niveau apporte en revanche une lecture plus informative de ce plan factoriel, raison pour laquelle elle a été maintenue dans la présentation du rapport.
+
+On en déduit que les individus de niveau expert suivent des entraînements de plus longue durée et présentent une dépense calorique plus élevée.  En revanche, aucun lien net n’apparaît entre la taille et le BMI dans ce plan factoriel.
+
+On ne s’attardera pas sur le plan factoriel défini par les dimensions 2 et 3, leur inertie expliquée étant nettement plus faible que celle de la dimension 1, que l’on a donc choisi de privilégier dans l’analyse. L’ensemble des résultats obtenus apparaît par ailleurs cohérent avec les interprétations précédentes et les relations mises en évidence entre les variables.
 
 
 # Références
