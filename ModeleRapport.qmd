@@ -350,9 +350,9 @@ On s’intéresse à présent à l’analyse de jeux de données comportant plus
 
 ## analyse en composante principale (ACP)
 
-Le principe de l’analyse en composantes principales (ACP) est de représenter les données dans un espace de dimension plus faible, tout en conservant un maximum d’information issue des données initiales. L’objectif est donc de réduire la dimension du jeu de données en limitant la perte d’information.
+Le principe de l’analyse en composantes principales (ACP) est de représenter les données dans un espace de dimension plus faible, tout en conservant un maximum d’information issue des données initiales. # redondant : L’objectif est donc de réduire la dimension du jeu de données en limitant la perte d’information.
 
-Initialement, le nombre de dimensions correspond au nombre de variables quantitatives observées. L’ACP permet de construire de nouvelles variables, appelées *composantes principales*, moins nombreuses que les variables initiales. Chaque composante principale définit un axe du nouvel espace de représentation, appelé *espace factoriel*.
+Initialement, le nombre de dimensions correspond au nombre de variables quantitatives observées. L’ACP permet de construire de nouvelles variables, appelées *composantes principales*. Chacune définit un axe du nouvel espace de représentation, appelé *espace factoriel*.
 
 ### Choix de la méthode d'ACP
 #peut carrément réduire et expliquer en 3 phrases
@@ -382,7 +382,7 @@ gg1<-fviz_eig(respcaC)
 ```
 
 ```{r}
-#| fig-cap: ""
+#| fig-cap: " "
 #| label: "fig-11"
 
 respca<-PCA(gym,quali.sup=c(1,8),scale.unit = T,graph=F)
@@ -401,14 +401,14 @@ Il est donc nécessaire de continuer l'étude en utilisant une ACP centrée- ré
 ### ACP centrée réduite
 
 
-On s’intéresse à présent au concept d’**inertie**, notion centrale en analyse en composantes principales, qui permet de quantifier la quantité d’information contenue dans les données et de guider le choix du nombre de dimensions à conserver.
+On s’intéresse à présent au concept d’**inertie**, notion centrale en ACP, qui permet de quantifier la quantité d’information contenue dans les données et de guider le choix du nombre de dimensions à conserver.
 
 L’inertie totale correspond à la dispersion globale des individus et peut être décomposée en **inerties axiales**, chacune associée à une composante principale. Pour chaque axe, on calcule ainsi la **part d’inertie expliquée**, ainsi que l’**inertie cumulée**, qui mesure la proportion d’information conservée lorsque plusieurs dimensions sont prises en compte.
 Dans cette étude, nous retenons les trois premières dimensions, dont l’inertie cumulée atteint 85,88 % ( @fig-12 ). Ce choix permet de conserver l’essentiel de l’information initiale tout en réduisant significativement la dimension des données, ce qui facilite leur visualisation et leur interprétation
 
 On pourra aussi envisager d’ajouter une quatrième dimension pour vérifier que les informations importantes sont bien prises en compte dans le modèle. **À VOIR**
 ```{r}
-#| fig-cap: ""
+#| fig-cap: " "
 #| label: "fig-12"
 respca$eig
 ```
@@ -419,7 +419,7 @@ Le deuxième axe (Dim2) est positivement corrélé au *bmi* et *weight*.
 
 #fig13 weight et bmi très positivement correlé, calories duration aussi entre elles,
 ```{r}
-#| fig-cap: ""
+#| fig-cap: " "
 #| label: "fig-13"
 #fviz_pca_var(respca)
 #fviz_pca_var(respca,axes=c(1,3))
@@ -452,11 +452,11 @@ d2<-fviz_pca_ind(respca,geom="point",habillage=as.factor(gym$level))
 d1
 #d2 POUR COMPRENDRE LIGNE DROITE QUI VIENT D'EXPERT
 #Axes 1 et 3
-#| fig-cap: ""
+#| fig-cap: " "
 #| label: "fig-16"
 d3<-fviz_pca_ind(respca,axes=c(1,3),geom="point", habillage=as.factor(gym$gender))
-d4<-fviz_pca_ind(respca,axes=c(1,3),geom="point", habillage=as.factor(gym$level))
-d3
+d4 <- fviz_pca_ind(respca, axes=c(1,3),geom="point", habillage = as.factor(gym$level))
+#d3
 d4
 ```
 
@@ -474,6 +474,10 @@ On en déduit que les individus de niveau expert suivent des entraînements de p
 
 On ne s’attardera pas sur le plan factoriel défini par les dimensions 2 et 3, leur inertie expliquée étant nettement plus faible que celle de la dimension 1, que l’on a donc choisi de privilégier dans l’analyse. L’ensemble des résultats obtenus apparaît par ailleurs cohérent avec les interprétations précédentes et les relations mises en évidence entre les variables.
 
+# Clustering
+
+## K-means
+## Classification hiérarchique
 
 # Références
 
