@@ -421,9 +421,9 @@ Le deuxième axe (Dim2) est positivement corrélé au *bmi* et *weight*.
 ```{r}
 #| fig-cap: ""
 #| label: "fig-13"
-fviz_pca_var(respca)
-fviz_pca_var(respca,axes=c(1,3))
 #fviz_pca_var(respca)
+#fviz_pca_var(respca,axes=c(1,3))
+
 #| fig-cap: ""
 #| label: "fig-14"
 corrplot(respca$var$cor, method="ellipse")
