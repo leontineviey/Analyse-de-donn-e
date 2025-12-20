@@ -478,6 +478,33 @@ On ne s’attardera pas sur le plan factoriel défini par les dimensions 2 et 3,
 
 ## K-means
 ## Classification hiérarchique
+La classification hiérachique est une méthode de clustering qui regroupe progressivement les individus par similitudes.
+
+Nous allons dans un permier temps comparer 3 méthodes différentes pour mesurer les distences entre 2 groupes différentes
+
+```{r}
+
+
+hclustsingle<-hclust(dist(gym), method = "single", members = NULL)
+hclustcomplete<-hclust(dist(gym),method = "complete", members = NULL)
+#hclustaverage<-hclust(dist(gymq),method = "average", members = NULL)
+
+# Dendrogramme
+plot(hclustsingle,labels=FALSE,hang=-1)
+plot(hclustcomplete,labels=FALSE,hang=-1)
+#plot(hclustaverage,labels=FALSE,hang=-1)
+
+fviz_dend(hclustsingle,show_labels=FALSE)
+fviz_dend(hclustcomplete,show_labels=FALSE)
+#fviz_dend(hclustaverage,show_labels=FALSE)
+```
+
+
+```{r}
+a=cutree(hclustcomplete,3)
+table(gym$level,a)
+table(gym$gender,a)
+```
 
 # Références
 
