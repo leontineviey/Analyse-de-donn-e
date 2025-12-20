@@ -480,7 +480,7 @@ On ne s’attardera pas sur le plan factoriel défini par les dimensions 2 et 3,
 ## Classification hiérarchique
 La classification hiérachique est une méthode de clustering qui regroupe progressivement les individus par similitudes.
 
-Nous allons dans un permier temps comparer 3 méthodes différentes pour mesurer les distences entre 2 groupes différentes
+Nous allons dans un permier temps comparer 3 méthodes différentes pour mesurer les distances entre 2 groupes différentes. Il existe 3 types de liens entre les classes: lien simple, lien complet ou encore lien moyen.
 
 ```{r}
 
@@ -502,8 +502,89 @@ fviz_dend(hclustcomplete,show_labels=FALSE)
 
 ```{r}
 a=cutree(hclustcomplete,3)
+print("Croisement avec le niveau :")
 table(gym$level,a)
+print("Croisement avec le genre :")
 table(gym$gender,a)
+```
+```{r}
+df<-data.frame(gymq,Class=as.factor(a))
+df<-melt(df,id="Class")
+ggplot(df,aes(x=variable,y=value))+
+  facet_wrap(~variable, scales = "free") +
+  geom_violin(aes(fill=Class))
+
+
+```
+
+Nous allons maintenant utiliser la mesure d'agrégation de Ward.L'objectif de cette méthode est de limiter au maximum l'inertie intraclasse à chaque regroupement. Progressivement, les objets sont agglomérés les uns aux autres en respectant ce critère jusqu’à ce que le nombre de cluster souhaité soit atteint.
+```{r}
+hward<-hclust(dist(gym), method = "ward.D2", members = NULL)
+fviz_dend(hward,show_labels=FALSE)
+```
+```{r}
+set.seed(1234)
+CH<-NULL
+Kmax<-20
+for (k in 2:Kmax){
+  CH<-c(CH,index.G1(x=gymq, cl=cutree(hward,k=k)))
+}
+daux<-data.frame(NbClust=2:Kmax,CH=CH)
+ggplot(daux,aes(x=NbClust,y=CH))+
+  geom_line()+
+  geom_point()
+
+Kmax<-15
+reskmeanscl<-matrix(0,nrow=nrow(gym),ncol=Kmax-1)
+Iintra<-NULL
+for (k in 2:Kmax){
+  resaux<-kmeans(gymq,centers=k)
+  reskmeanscl[,k-1]<-resaux$cluster
+  Iintra<-c(Iintra,resaux$tot.withinss)
+}
+
+df<-data.frame(K=2:15,Iintra=Iintra)
+ggplot(df,aes(x=K,y=Iintra))+
+  geom_line()+
+  geom_point()+
+  xlab("Nombre de classes")+
+  ylab("Inertie intraclasse")
+
+ClustCH<-cutree(hward,k=5)
+fviz_dend(hward,k=5)
+```
+Il existe différentes critères pour choisir le nombre optimal de cluster: R-Square, Calinski-Harabasz, silhouette, Gap Statistique ... 
+```{r}
+
+data_cr <- scale(gymq, center = TRUE, scale = TRUE) 
+inertie_totale <- sum(data_cr^2)
+
+r_carre <- numeric(10) # Créer un vecteur vide
+
+for (k in 1:10) {
+  groupes <- cutree(hclustcomplete, k = k)
+  
+  inertie_intra <- 0
+  for (g in 1:k) {
+    sub_data <- data_cr[groupes == g, , drop=FALSE]
+    if(nrow(sub_data) > 1) {
+       inertie_intra <- inertie_intra + sum((t(t(sub_data) - colMeans(sub_data)))^2)
+    }
+  }
+  
+  r_carre[k] <- (inertie_totale - inertie_intra) / inertie_totale
+}
+
+
+df_r2 <- data.frame(NbClust = 1:10, R_carre = r_carre)
+
+ggplot(df_r2, aes(x = NbClust, y = R_carre)) +
+  geom_line() +                        
+  geom_point() +                     
+  labs(x = "Nombre de classes (k)",    
+       y = "R-carré",                  
+       title = "Évolution du R-carré selon le nombre de classes") +
+  theme_minimal()
 ```
 
 # Références
