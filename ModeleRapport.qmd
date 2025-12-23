@@ -26,6 +26,8 @@ library(ggplot2)
 library(corrplot)
 library(FactoMineR)
 library(factoextra)
+library(clusterSim)
+library(factoextra)
 library(gridExtra)
 library(knitr)
 library(reshape2)
@@ -478,52 +480,57 @@ On ne s’attardera pas sur le plan factoriel défini par les dimensions 2 et 3,
 
 ## K-means
 ## Classification hiérarchique
+
 La classification hiérachique est une méthode de clustering qui regroupe progressivement les individus par similitudes.
 
-Nous allons dans un permier temps comparer 3 méthodes différentes pour mesurer les distances entre 2 groupes différentes. Il existe 3 types de liens entre les classes: lien simple, lien complet ou encore lien moyen.
+Nous allons dans un permier temps comparer visuellement 3 critères différentes pour mesurer les distances entre 2 groupes différentes. Il existe 3 types de liens entre les classes: 
+Lien simple (single) : Relie les voisins les plus proches.
+
+Lien complet (complete) : Crée des classes compactes.
+
+Lien moyen (average) : Un compromis entre les deux.
 
 ```{r}
-
-
-hclustsingle<-hclust(dist(gym), method = "single", members = NULL)
-hclustcomplete<-hclust(dist(gym),method = "complete", members = NULL)
-#hclustaverage<-hclust(dist(gymq),method = "average", members = NULL)
+#| echo: false
+#| eval: false
+#| fig-cap: "Comparaison de 3 dendogrammes"
+#| label: "fig-20"
+set.seed(1234)
+hclustsingle<-hclust(dist(gymq,method="euclidean"), method = "single", members = NULL)
+hclustcomplete<-hclust(dist(gymq,method="euclidean"),method = "complete", members = NULL)
+hclustaverage<-hclust(dist(gymq,method="euclidean"),method = "average", members = NULL)
 
 # Dendrogramme
 plot(hclustsingle,labels=FALSE,hang=-1)
 plot(hclustcomplete,labels=FALSE,hang=-1)
-#plot(hclustaverage,labels=FALSE,hang=-1)
+plot(hclustaverage,labels=FALSE,hang=-1)
 
-fviz_dend(hclustsingle,show_labels=FALSE)
-fviz_dend(hclustcomplete,show_labels=FALSE)
+#fviz_dend(hclustsingle,show_labels=FALSE)
+#fviz_dend(hclustcomplete,show_labels=FALSE)
 #fviz_dend(hclustaverage,show_labels=FALSE)
 ```
+La @fig-20 permet de visualiser 3 dendogrammes utilisant chacun un type de lien différent... A ANALYSER
 
+
+
+Nous allons maintenant utiliser la mesure d'agrégation de Ward.L'objectif de cette méthode est de limiter au maximum l'inertie intraclasse à chaque regroupement. Progressivement, les objets sont agglomérés les uns aux autres en respectant ce critère jusqu’à ce que le nombre de cluster souhaité soit atteint. Cette méthode est souvent utilisée car elle permet de creer des groupes homogènes.
 
 ```{r}
-a=cutree(hclustcomplete,3)
-print("Croisement avec le niveau :")
-table(gym$level,a)
-print("Croisement avec le genre :")
-table(gym$gender,a)
-```
-```{r}
-df<-data.frame(gymq,Class=as.factor(a))
-df<-melt(df,id="Class")
-ggplot(df,aes(x=variable,y=value))+
-  facet_wrap(~variable, scales = "free") +
-  geom_violin(aes(fill=Class))
-
-
-```
-
-Nous allons maintenant utiliser la mesure d'agrégation de Ward.L'objectif de cette méthode est de limiter au maximum l'inertie intraclasse à chaque regroupement. Progressivement, les objets sont agglomérés les uns aux autres en respectant ce critère jusqu’à ce que le nombre de cluster souhaité soit atteint.
-```{r}
-hward<-hclust(dist(gym), method = "ward.D2", members = NULL)
+hward<-hclust(dist(gymq), method = "ward.D2", members = NULL)
 fviz_dend(hward,show_labels=FALSE)
+
 ```
+
+Nous allons maintenant déterminer le nombre de classes.
+Il existe différentes critères pour choisir le nombre optimal de cluster: R-Square, Calinski-Harabasz, silhouette, Gap Statistique ... 
+Nous allons utiliser l'indice de Calinski-Harabasz et celui de la Silhouette.
+
+
 ```{r}
-set.seed(1234)
+fviz_nbclust(gymq, hcut, method = "silhouette") +
+  labs(subtitle = "Critère de la Silhouette")
+
+
 CH<-NULL
 Kmax<-20
 for (k in 2:Kmax){
@@ -551,9 +558,9 @@ ggplot(df,aes(x=K,y=Iintra))+
   ylab("Inertie intraclasse")
 
 ClustCH<-cutree(hward,k=5)
-fviz_dend(hward,k=5)
+
 ```
-Il existe différentes critères pour choisir le nombre optimal de cluster: R-Square, Calinski-Harabasz, silhouette, Gap Statistique ... 
+ 
 ```{r}
 
 data_cr <- scale(gymq, center = TRUE, scale = TRUE) 
@@ -587,5 +594,29 @@ ggplot(df_r2, aes(x = NbClust, y = R_carre)) +
   theme_minimal()
 ```
 
+Une fois que l'on a choisi le nombre de cluster, nous allons observer la distribusion des variables par classe.
+
+```{r}
+#| echo: false
+#| eval: false
+k=3
+fviz_dend(hward,k)
+
+df<-data.frame(gymq,Class=as.factor(a))
+df<-melt(df,id="Class")
+ggplot(df,aes(x=variable,y=value))+
+  facet_wrap(~variable, scales = "free") +
+  geom_violin(aes(fill=Class))
+
+a=cutree(hward,k)
+print("Croisement avec le niveau :")
+table(gym$level,a)
+print("Croisement avec le genre :")
+table(gym$gender,a)
+```
+
+
+
+### comparaison des méthodes de clustering
 # Références
 
