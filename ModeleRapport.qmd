@@ -569,7 +569,7 @@ inertie_totale <- sum(data_cr^2)
 r_carre <- numeric(10) # Créer un vecteur vide
 
 for (k in 1:10) {
-  groupes <- cutree(hclustcomplete, k = k)
+  groupes <- cutree(hward, k = k)
   
   inertie_intra <- 0
   for (g in 1:k) {
@@ -608,11 +608,11 @@ ggplot(df,aes(x=variable,y=value))+
   facet_wrap(~variable, scales = "free") +
   geom_violin(aes(fill=Class))
 
-a=cutree(hward,k)
-print("Croisement avec le niveau :")
-table(gym$level,a)
-print("Croisement avec le genre :")
-table(gym$gender,a)
+#a=cutree(hward,k)
+#print("Croisement avec le niveau :")
+#table(gym$level,a)
+#print("Croisement avec le genre :")
+#table(gym$gender,a)
 ```
 
 
