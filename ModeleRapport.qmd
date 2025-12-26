@@ -493,33 +493,39 @@ Lien moyen (average) : Un compromis entre les deux.
 ```{r}
 #| echo: false
 #| eval: false
-#| fig-cap: "Comparaison de 3 dendogrammes"
+#| fig-cap: "Comparaison de 3 dendrogrammes"
 #| label: "fig-20"
 set.seed(1234)
 hclustsingle<-hclust(dist(gymq,method="euclidean"), method = "single", members = NULL)
 hclustcomplete<-hclust(dist(gymq,method="euclidean"),method = "complete", members = NULL)
 hclustaverage<-hclust(dist(gymq,method="euclidean"),method = "average", members = NULL)
 
-# Dendrogramme
 plot(hclustsingle,labels=FALSE,hang=-1)
 plot(hclustcomplete,labels=FALSE,hang=-1)
 plot(hclustaverage,labels=FALSE,hang=-1)
 
-#fviz_dend(hclustsingle,show_labels=FALSE)
-#fviz_dend(hclustcomplete,show_labels=FALSE)
-#fviz_dend(hclustaverage,show_labels=FALSE)
+
 ```
 La @fig-20 permet de visualiser 3 dendogrammes utilisant chacun un type de lien différent... A ANALYSER
+PAS SUR DE LE GARDER
 
 
-
-Nous allons maintenant utiliser la mesure d'agrégation de Ward.L'objectif de cette méthode est de limiter au maximum l'inertie intraclasse à chaque regroupement. Progressivement, les objets sont agglomérés les uns aux autres en respectant ce critère jusqu’à ce que le nombre de cluster souhaité soit atteint. Cette méthode est souvent utilisée car elle permet de creer des groupes homogènes.
+Nous allons maintenant utiliser la mesure d'agrégation de Ward. L'objectif de cette méthode est de limiter au maximum l'inertie intraclasse à chaque regroupement. Progressivement, les objets sont agglomérés les uns aux autres en respectant ce critère jusqu’à ce que le nombre de cluster souhaité soit atteint. Cette méthode est souvent utilisée car elle permet de creer des groupes homogènes.
 
 ```{r}
+#| echo: false
+#| fig-cap: "Dendrogramme hiérarchique utilisant la méthode Ward"
+#| label: "fig-21"
 hward<-hclust(dist(gymq), method = "ward.D2", members = NULL)
 fviz_dend(hward,show_labels=FALSE)
 
 ```
+La @fig‑21 présente un dendrogramme issu d’un clustering hiérarchique utilisant la méthode de Ward. L’axe vertical représente l’inertie intra‑classes On observe que les branches sont relativement équilibrées, ce qui est cohérent avec le fonctionnement de la méthode de Ward, qui cherche à minimiser l’augmentation de variance à chaque étape.
+
+Plus on choisit un nombre de classes élevé (les fusions se font à faible hauteur), plus les clusters obtenus sont homogènes mais peu distincts. À l’inverse, un nombre de classes plus faible (fusions à grande hauteur) conduit à des clusters plus hétérogènes mais mieux séparés.
+
+Le choix du nombre de classes est donc essentiel pour une interprétation pertinente du clustering..
+
 
 Nous allons maintenant déterminer le nombre de classes.
 Il existe différentes critères pour choisir le nombre optimal de cluster: R-Square, Calinski-Harabasz, silhouette, Gap Statistique ... 
@@ -527,80 +533,59 @@ Nous allons utiliser l'indice de Calinski-Harabasz et celui de la Silhouette.
 
 
 ```{r}
-fviz_nbclust(gymq, hcut, method = "silhouette") +
-  labs(subtitle = "Critère de la Silhouette")
+#| echo: false
+#| fig-cap: "comparaison des critères CH et silhouette pour le choix de k"
+#| label: "fig-22"
 
-
-CH<-NULL
 Kmax<-20
+#méthode de la silhouette
+Silhou<-NULL
+for (k in 2:Kmax){
+  a <- cutree(hward, k = k)
+  aux <- silhouette(a, dist(gymq))
+   Silhou<-c(Silhou,mean(aux[,3]))
+}
+
+df<-data.frame(K=2:Kmax,Silhouette=Silhou)
+g1=ggplot(df,aes(x=K,y=Silhouette))+
+  geom_point()+
+  geom_line()+
+  ggtitle("Critère de la silhouette ") + 
+  xlab("Nombre de clusters (k)") + 
+  ylab("Silhouette moyen")+
+  theme_minimal()
+
+
+#méthode de Calinski-Harabasz 
+CH<-NULL
 for (k in 2:Kmax){
   CH<-c(CH,index.G1(x=gymq, cl=cutree(hward,k=k)))
 }
 daux<-data.frame(NbClust=2:Kmax,CH=CH)
-ggplot(daux,aes(x=NbClust,y=CH))+
-  geom_line()+
-  geom_point()
-
-Kmax<-15
-reskmeanscl<-matrix(0,nrow=nrow(gym),ncol=Kmax-1)
-Iintra<-NULL
-for (k in 2:Kmax){
-  resaux<-kmeans(gymq,centers=k)
-  reskmeanscl[,k-1]<-resaux$cluster
-  Iintra<-c(Iintra,resaux$tot.withinss)
-}
-
-df<-data.frame(K=2:15,Iintra=Iintra)
-ggplot(df,aes(x=K,y=Iintra))+
+g2=ggplot(daux,aes(x=NbClust,y=CH))+
   geom_line()+
   geom_point()+
-  xlab("Nombre de classes")+
-  ylab("Inertie intraclasse")
+  ggtitle("Critère de Calinski–Harabasz ") + 
+  xlab("Nombre de clusters (k)") + 
+  ylab("Indice CH")+
+  theme_minimal()
 
-ClustCH<-cutree(hward,k=5)
 
+
+grid.arrange(g1,g2,ncol=2)
 ```
  
-```{r}
-
-data_cr <- scale(gymq, center = TRUE, scale = TRUE) 
-inertie_totale <- sum(data_cr^2)
-
-r_carre <- numeric(10) # Créer un vecteur vide
-
-for (k in 1:10) {
-  groupes <- cutree(hward, k = k)
-  
-  inertie_intra <- 0
-  for (g in 1:k) {
-    sub_data <- data_cr[groupes == g, , drop=FALSE]
-    if(nrow(sub_data) > 1) {
-       inertie_intra <- inertie_intra + sum((t(t(sub_data) - colMeans(sub_data)))^2)
-    }
-  }
-  
-  r_carre[k] <- (inertie_totale - inertie_intra) / inertie_totale
-}
-
-
-df_r2 <- data.frame(NbClust = 1:10, R_carre = r_carre)
-
-ggplot(df_r2, aes(x = NbClust, y = R_carre)) +
-  geom_line() +                        
-  geom_point() +                     
-  labs(x = "Nombre de classes (k)",    
-       y = "R-carré",                  
-       title = "Évolution du R-carré selon le nombre de classes") +
-  theme_minimal()
-```
-
-Une fois que l'on a choisi le nombre de cluster, nous allons observer la distribusion des variables par classe.
+Dans la @fig-22, nous pouvons observer deux graphiques permettant de choisir le nombre de clusters optimal selon différents critères.
+Le premier graphique est obtenu grâce au critère de silhouette. Pour choisir le nombre de clusters avec ce critère, il faut identifier le maximum. Le maximum global se situe à $k = 2$ (environ 0,53), ce qui correspond à la structure la mieux séparée. Cependant, un plateau significatif apparaît entre $k = 4$ et $k = 5$ (environ 0,49). Au-delà de $k = 5$, le score chute régulièrement, ce qui signifie que l'ajout de classes supplémentaires crée du "bruit" et dégrade la cohérence des groupes.
+Le deuxième graphique est obtenu grâce à l'indice de Calinski-Harabasz. Pour ce critère, on recherche généralement un pic ou un "coude" marqué sur la courbe. Un coude très net est visible à $k = 5$. Après ce point, la courbe s'aplatit : l'augmentation du score devient beaucoup plus lente par rapport à la complexité ajoutée au modèle.
+Nous avons donc choisi de retenir $k = 5$, car il représente le meilleur compromis entre les deux critères. En effet, bien que $k = 2$ soit optimal pour la silhouette, une telle analyse resterait binaire et trop simpliste pour l'interprétation de nos données.
 
 ```{r}
 #| echo: false
-#| eval: false
-k=3
+
+k=5
 fviz_dend(hward,k)
+a=cutree(hward,k)
 
 df<-data.frame(gymq,Class=as.factor(a))
 df<-melt(df,id="Class")
@@ -608,14 +593,13 @@ ggplot(df,aes(x=variable,y=value))+
   facet_wrap(~variable, scales = "free") +
   geom_violin(aes(fill=Class))
 
-#a=cutree(hward,k)
-#print("Croisement avec le niveau :")
-#table(gym$level,a)
-#print("Croisement avec le genre :")
-#table(gym$gender,a)
+print("Croisement avec le niveau :")
+table(gym$level,a)
+print("Croisement avec le genre :")
+table(gym$gender,a)
 ```
 
-
+Le partitionnement en 5 classes permet de distinguer clairement des profils comportementaux et morphologiques. La Classe 1 se détache par une activité physique intense (durée et calories élevées) associée à un régime faible en graisses, elle comprends une majorité d'hommes. La Classe 5 regroupe les individus les plus grands, tandis que la Classe 4 identifie les profils les moins actifs. Les classes 2 et 3 représentent des profils intermédiaires plus proches de la moyenne globale, la classe 2 se distinguant par une parfaite mixité homme-femme.
 
 ### comparaison des méthodes de clustering
 # Références
