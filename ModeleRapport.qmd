@@ -514,7 +514,7 @@ ggplot(df,aes(x=K,y=Iintra))+
 ```
 On observe coude soit 3 soit 4
 2)critère slihouette
-Méthode silhouette: on trouve 3 aussi (METHODE DAISY PEUT GERER VARIABLES MIXTES, J'AI MIS LES QUALITATIVE AUSSI CAR moins de valeur négatives, càd mal placées) 
+Méthode silhouette: on trouve 3 aussi(METHODE DAISY PEUT GERER VARIABLES MIXTES, J'AI MIS LES QUALITATIVE AUSSI CAR moins de valeur négatives, càd mal placées)  
 ```{r}
 set.seed(3)
 
