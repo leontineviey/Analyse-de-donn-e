@@ -487,7 +487,7 @@ On ne s’attardera pas sur le plan factoriel défini par les dimensions 2 et 3,
 # Clustering
 
 Le clustering est une méthode qui permet de créer des classes pour notre nuage de données, sans connaître les attributs.
-
+ 
 ## Kmeans
 ### Choix du nombre de classes
 1) tracer évolutiom inertie intraclasse
