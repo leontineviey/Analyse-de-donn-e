@@ -576,7 +576,7 @@ ggplot(Tab,aes(y=value,axis1=clust,axis2=Var2))+
   theme(legend.position = "none")
 
 ```
--->méthode centres mobiles
+-->méthode centres mobiles QUESTION: faut utiliser les valeurs centrées réduites ou pas?
 ```{r}
 #| eval: false 
 set.seed(2)
@@ -584,7 +584,7 @@ gymCR<-scale(gym[,-c(1,8)],center=TRUE, scale=TRUE)
 reskmeansFORGY<-kmeans(gymCR[,-c(1,8)],centers=3,iter.max=150,algorithm="Forgy")
 
 table(reskmeansFORGY$cluster)
-fviz_cluster(reskmeansFORGY,data=gymCR[,-c(1,8)],
+fviz_cluster(reskmeansFORGY,data=gym[,-c(1,8)],
              ellipse.type="norm",labelsize=8,
              geom=c("point"))+ggtitle("")
 fviz_pca_ind(resacp,col.ind=as.factor(reskmeansFORGY$cluster), #importznte de poser as.factor
@@ -748,5 +748,9 @@ table(gym$gender,a)
 Le partitionnement en 5 classes permet de distinguer clairement des profils comportementaux et morphologiques. La Classe 1 se détache par une activité physique intense (durée et calories élevées) associée à un régime faible en graisses, elle comprends une majorité d'hommes. La Classe 5 regroupe les individus les plus grands, tandis que la Classe 4 identifie les profils les moins actifs. Les classes 2 et 3 représentent des profils intermédiaires plus proches de la moyenne globale, la classe 2 se distinguant par une parfaite mixité homme-femme.
 
 ### comparaison des méthodes de clustering
+(vite fait, manque détailler les résultats!)
+La méthode de k-means et la classification hiérarchique ascendante avec le critère de Ward sont deux approches de clustering largement utilisées pour regrouper des données numériques. La méthode de k-means est une méthode de partitionnement qui nécessite de fixer le nombre de clusters à l’avance et vise à minimiser l’inertie intra-classe. Elle est rapide et adaptée aux grands jeux de données, mais sensible à l’initialisation et suppose des clusters de forme compacte.
+
+La classification hiérarchique avec la méthode de Ward repose sur la fusion progressive des clusters en minimisant l’augmentation de l’inertie intra-classe. Elle fournit un dendrogramme permettant de choisir le nombre de clusters a posteriori et offre une meilleure interprétabilité, au prix d’un coût computationnel plus élevé. Les deux méthodes reposent sur des critères similaires et peuvent être utilisées de manière complémentaire, Ward pour l’analyse exploratoire et k-means pour la partition finale.
 # Références
 
