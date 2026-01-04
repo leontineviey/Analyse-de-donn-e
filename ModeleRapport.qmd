@@ -578,6 +578,7 @@ ggplot(Tab,aes(y=value,axis1=clust,axis2=Var2))+
 ```
 -->méthode centres mobiles
 ```{r}
+#| eval: false 
 set.seed(2)
 gymCR<-scale(gym[,-c(1,8)],center=TRUE, scale=TRUE)
 reskmeansFORGY<-kmeans(gymCR[,-c(1,8)],centers=3,iter.max=150,algorithm="Forgy")
@@ -602,6 +603,7 @@ ggplot(Tab,aes(y=value,axis1=clust,axis2=Var2))+
 ```
 -->nuées dynamiques
 ```{r}
+#| eval: false
 set.seed(3)
 gymCR<-scale(gym[,-c(1,8)],center=TRUE, scale=TRUE)
 reskmeansND<-kmeans(gymCR[,-c(1,8)],centers=3,iter.max=150)
