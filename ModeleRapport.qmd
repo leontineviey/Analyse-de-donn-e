@@ -54,11 +54,14 @@ blabla on a un jeu de données composé de n = `r dim(gym)[1]` individus et p= `
 a pas oublier : identifier nature des variables qualitative nominale/ordinale, quantitative discr`ete/continue*
 ~nous avons fait un choix parmis les graphiques afin de rendre un rapport le plus ... possible. certain graphique n'apparaityrons pas mais sont présent dans les ficher quarto 
 
-# analyse uni-dimensionnelle et bi-dimensionnelle
+# Analyse uni-dimensionnelle et bi-dimensionnelle
 
-## analyse unidimensionnelle
+## Analyse unidimensionnelle
 
-On commence par définir les variables qualitative manuellement sur R avec *as.factor*
+On commence par définir les variables qualitative5 manuellement sur R avec *as.factor*.
+identifier nature des variables qualitative nominale/ordinale, quantitative discr`ete/continue*
+nous affichons..
+
 
 ```{r}
 #| echo: false
@@ -117,7 +120,7 @@ grid.arrange(g3,g5,g4,ncol=3)
 ```
 Les graphiques en boîtes de la @fig-2 illustrent la tendance centrale (médiane), la dispersion (écart interquartile) ainsi que la présence de valeurs extrêmes pour plusieurs variables d'un ensemble de données. Ils permettent de souligner une forte variabilité pour le poids et les calories, et une plus grande concentration pour la taille, l'IMC et la matière grasse.
 
-Nous allons maintenant représenter la variable Weight pour mieux observer cette disparité
+Nous allons maintenant représenter la variable **Weight** pour mieux observer cette disparité
 
 ```{r}
 #| echo: false
@@ -138,8 +141,8 @@ Sur l'histogramme de densité de la @fig-3, nous pouvons observer que la majorit
 
 
 
-## analyse bidimensionnel
-### entre deux variables qualitatives
+## Analyse bidimensionnel
+### Entre deux variables qualitatives
 
 Nous nous intéressons dans cette partie a la corrélation des deux variables qualitatives **level** et **gender**.
 
@@ -486,7 +489,8 @@ On ne s’attardera pas sur le plan factoriel défini par les dimensions 2 et 3,
 
 # Clustering
 
-Le clustering est une méthode qui permet de créer des classes pour notre nuage de données, sans connaître les attributs.
+Le clustering est une méthode qui permet de créer des classes pour notre nuage de données, sans connaître les attributs. Pour ce faire, nous allons déterminer le nombre de classes à choisir pour obtenir un clustering optimal.
+Il existe différentes critères pour choisir le nombre optimal de cluster: R-Square, Calinski-Harabasz, silhouette, Gap Statistique ... 
  
 ## Kmeans
 ### Choix du nombre de classes
@@ -574,6 +578,7 @@ ggplot(Tab,aes(y=value,axis1=clust,axis2=Var2))+
   geom_alluvium(aes(fill=clust))+
   #geom_stratum(width = 1/12)+   
   theme(legend.position = "none")
+chordDiagram(table(clust,gym[,1]))
 
 ```
 -->méthode centres mobiles QUESTION: faut utiliser les valeurs centrées réduites ou pas?
@@ -642,7 +647,7 @@ Lien moyen (average) : Un compromis entre les deux.
 #| eval: false
 #| fig-cap: "Comparaison de 3 dendrogrammes"
 #| label: "fig-20"
-set.seed(1234)
+set.seed(2)
 hclustsingle<-hclust(dist(gymq,method="euclidean"), method = "single", members = NULL)
 hclustcomplete<-hclust(dist(gymq,method="euclidean"),method = "complete", members = NULL)
 hclustaverage<-hclust(dist(gymq,method="euclidean"),method = "average", members = NULL)
@@ -663,6 +668,7 @@ Nous allons maintenant utiliser la mesure d'agrégation de Ward. L'objectif de c
 #| echo: false
 #| fig-cap: "Dendrogramme hiérarchique utilisant la méthode Ward"
 #| label: "fig-21"
+set.seed(2)
 hward<-hclust(dist(gymq), method = "ward.D2", members = NULL)
 fviz_dend(hward,show_labels=FALSE)
 
@@ -674,8 +680,7 @@ Plus on choisit un nombre de classes élevé (les fusions se font à faible haut
 Le choix du nombre de classes est donc essentiel pour une interprétation pertinente du clustering..
 
 
-Nous allons maintenant déterminer le nombre de classes.
-Il existe différentes critères pour choisir le nombre optimal de cluster: R-Square, Calinski-Harabasz, silhouette, Gap Statistique ... 
+ 
 Nous allons utiliser l'indice de Calinski-Harabasz et celui de la Silhouette.
 
 
