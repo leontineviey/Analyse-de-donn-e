@@ -573,12 +573,13 @@ table(reskmeansMCQUEEN$cluster, gym$level )
 table(reskmeansMCQUEEN$cluster, gym$gender )
 
 clust<-paste("Cl-K",reskmeansMCQUEEN$cluster,sep="")
-Tab<-melt(table(clust,gymCR[,1]))
+Tab<-melt(table(clust,gym[,1]))
 ggplot(Tab,aes(y=value,axis1=clust,axis2=Var2))+
   geom_alluvium(aes(fill=clust))+
   #geom_stratum(width = 1/12)+   
   theme(legend.position = "none")
 chordDiagram(table(clust,gym[,1]))
+chordDiagram(table(clust,gym[,8]))
 
 ```
 -->méthode centres mobiles QUESTION: faut utiliser les valeurs centrées réduites ou pas?
@@ -600,7 +601,7 @@ table(reskmeansFORGY$cluster, gym$level )
 table(reskmeansFORGY$cluster, gym$gender )
 
 clust<-paste("Cl-K",reskmeansFORGY$cluster,sep="")
-Tab<-melt(table(clust,gymCR[,1]))
+Tab<-melt(table(clust,gym[,1]))
 ggplot(Tab,aes(y=value,axis1=clust,axis2=Var2))+
   geom_alluvium(aes(fill=clust))+
   #geom_stratum(width = 1/12)+   
@@ -753,6 +754,28 @@ table(gym$gender,a)
 Le partitionnement en 5 classes permet de distinguer clairement des profils comportementaux et morphologiques. La Classe 1 se détache par une activité physique intense (durée et calories élevées) associée à un régime faible en graisses, elle comprends une majorité d'hommes. La Classe 5 regroupe les individus les plus grands, tandis que la Classe 4 identifie les profils les moins actifs. Les classes 2 et 3 représentent des profils intermédiaires plus proches de la moyenne globale, la classe 2 se distinguant par une parfaite mixité homme-femme.
 
 ### comparaison des méthodes de clustering
+
+```{r}
+print("Croisement entre cah et kmeans :")
+table(a,clust)
+
+clust<-paste("Cl-K",reskmeansMCQUEEN$cluster,sep="")
+Tab<-melt(table(a,clust))
+Tab$a <- factor(Tab$a)
+
+ggplot(Tab,aes(y=value,axis1=a,axis2=clust))+
+  geom_alluvium(aes(fill=a))+
+  geom_stratum(width = 1/12)+
+  scale_fill_viridis_d()+
+  theme(legend.position = "none")
+ggplot(Tab,aes(y=value,axis1=clust,axis2=a))+
+  geom_alluvium(aes(fill=clust))+
+  geom_stratum(width = 1/12)+
+  theme(legend.position = "none")
+
+
+```
+
 (vite fait, manque détailler les résultats!)
 La méthode de k-means et la classification hiérarchique ascendante avec le critère de Ward sont deux approches de clustering largement utilisées pour regrouper des données numériques. La méthode de k-means est une méthode de partitionnement qui nécessite de fixer le nombre de clusters à l’avance et vise à minimiser l’inertie intra-classe. Elle est rapide et adaptée aux grands jeux de données, mais sensible à l’initialisation et suppose des clusters de forme compacte.
 
