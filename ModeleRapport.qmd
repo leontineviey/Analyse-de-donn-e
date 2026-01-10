@@ -50,22 +50,19 @@ gymq=gym[,-c(1,8)]
 
 
 # Introduction
-blabla on a un jeu de données composé de n = `r dim(gym)[1]` individus et p= `r dim(gym)[2]` variables. 
-a pas oublier : identifier nature des variables qualitative nominale/ordinale, quantitative discr`ete/continue*
-~nous avons fait un choix parmis les graphiques afin de rendre un rapport le plus ... possible. certain graphique n'apparaityrons pas mais sont présent dans les ficher quarto 
+Notre rapport a pour objectif d'analyser un jeu de données composé de `r dim(gym)[1]` individus et `r dim(gym)[2]` variables. Notre objectif tout au long de ce projet d’examiner la structure des données, d’identifier les relations entre variables et de mettre en évidence des profils caractéristiques.
 
-# Analyse uni-dimensionnelle et bi-dimensionnelle
+L’étude s’articule autour d’une analyse unidimensionnelle et bidimensionnelle, suivie d’approches multidimensionnelles (ACP) et de méthodes de clustering. Certains graphiques ne figurent pas dans ce rapport pour des raisons de lisibilité, mais restent disponibles dans les fichiers Quarto associés. 
 
-## Analyse unidimensionnelle
-
-On commence par définir les variables qualitative5 manuellement sur R avec *as.factor*.
-identifier nature des variables qualitative nominale/ordinale, quantitative discr`ete/continue*
-nous affichons..
-
+Le jeu de données que nous allons étudier dans ce rapport contient des variables décrivant les profils physiques, les pratiques d’exercice et les mesures de performance des 973 adhérents d'une salle de sport. Les variables sont de différents Qualitatives nominales (**gender**) ou ordinales (**level**);
+Quantitatives discrètes (**duration**,**water** et **calories**) ou continues (**weight**,**height**,**fat** et **bmi**).
+nous avons tout d'abord défini les variables qualitatives manuellement sur R avec *as.factor*.
+{\small
 
 ```{r}
 #| echo: false
 #| fig-cap: "résumé des 9 variables du jeu de donnée"
+#| label: "fig-l0"
 
 gym$gender<-as.factor(gym$gender)
 gym$level<-factor(gym$level,labels=c("débutant","intermédiaire","expert"))
@@ -74,6 +71,12 @@ summary(gym)
 
 
 ```
+}
+La @fig-l0 contient un résumé pour chaque variable de notre jeu de donnée.
+
+# Analyse descriptive
+
+## Analyse uni-dimensionnelle
 
 ### Pour une variable qualitative
 Nous allons dans un premier temps nous interesser a la répartition des deux variables qualitatives: level et gender
@@ -141,7 +144,7 @@ Sur l'histogramme de densité de la @fig-3, nous pouvons observer que la majorit
 
 
 
-## Analyse bidimensionnel
+## Analyse bi-dimensionnel
 ### Entre deux variables qualitatives
 
 Nous nous intéressons dans cette partie a la corrélation des deux variables qualitatives **level** et **gender**.
@@ -356,12 +359,10 @@ ggplot(gym, aes(x = fat, y = calories)) +
 ```
 
 
-# Statistiques multidimensionnelles
+# Statistiques multidimensionnelles (ACP)
 
 On s’intéresse à présent à l’analyse de jeux de données comportant plus de deux variables. Dans la suite, seules les variables quantitatives seront prises en compte.
 
-
-## analyse en composante principale (ACP)
 
 Le principe de l’analyse en composantes principales (ACP) est de représenter les données dans un espace de dimension plus faible, tout en conservant un maximum d’information issue des données initiales. # redondant : L’objectif est donc de réduire la dimension du jeu de données en limitant la perte d’information.
 
@@ -680,7 +681,7 @@ Plus on choisit un nombre de classes élevé (les fusions se font à faible haut
 
 Le choix du nombre de classes est donc essentiel pour une interprétation pertinente du clustering..
 
-
+### choix de nombre de classes
  
 Nous allons utiliser l'indice de Calinski-Harabasz et celui de la Silhouette.
 
