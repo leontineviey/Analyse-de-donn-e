@@ -50,11 +50,11 @@ gymq=gym[,-c(1,8)]
 
 
 # Introduction
-Notre rapport a pour objectif d'analyser un jeu de données composé de `r dim(gym)[1]` individus et `r dim(gym)[2]` variables. Notre objectif tout au long de ce projet d’examiner la structure des données, d’identifier les relations entre variables et de mettre en évidence des profils caractéristiques.
+Notre rapport a pour objectif d'analyser un jeu de données composé de `r dim(gym)[1]` individus et `r dim(gym)[2]` variables. Notre objectif tout au long de ce projet est d’examiner la structure des données, d’identifier les relations entre variables et de mettre en évidence des profils caractéristiques.
 
 L’étude s’articule autour d’une analyse unidimensionnelle et bidimensionnelle, suivie d’approches multidimensionnelles (ACP) et de méthodes de clustering. Certains graphiques ne figurent pas dans ce rapport pour des raisons de lisibilité, mais restent disponibles dans les fichiers Quarto associés. 
 
-Le jeu de données que nous allons étudier dans ce rapport contient des variables décrivant les profils physiques, les pratiques d’exercice et les mesures de performance des 973 adhérents d'une salle de sport. Les variables sont de différents Qualitatives nominales (**gender**) ou ordinales (**level**);
+Le jeu de données que nous allons étudier dans ce rapport contient des variables décrivant les profils physiques, les pratiques d’exercice et les mesures de performance des 973 adhérents d'une salle de sport. Les variables sont de différents types: Qualitatives nominales (**gender**) ou ordinales (**level**);
 Quantitatives discrètes (**duration**,**water** et **calories**) ou continues (**weight**,**height**,**fat** et **bmi**).
 nous avons tout d'abord défini les variables qualitatives manuellement sur R avec *as.factor*.
 {\small
@@ -382,21 +382,13 @@ ggplot(gym, aes(x = fat, y = calories)) +
 On s’intéresse à présent à l’analyse de jeux de données comportant plus de deux variables. Dans la suite, seules les variables quantitatives seront prises en compte.
 
 
-Le principe de l’analyse en composantes principales (ACP) est de représenter les données dans un espace de dimension plus faible, tout en conservant un maximum d’information issue des données initiales. # redondant : L’objectif est donc de réduire la dimension du jeu de données en limitant la perte d’information.
+Le principe de l’analyse en composantes principales (ACP) est de réduire la dimension du jeu de données en limitant la perte d’information.
 
 Initialement, le nombre de dimensions correspond au nombre de variables quantitatives observées. L’ACP permet de construire de nouvelles variables, appelées *composantes principales*. Chacune définit un axe du nouvel espace de représentation, appelé *espace factoriel*.
 
 ### Choix de la méthode d'ACP
-#peut carrément réduire et expliquer en 3 phrases
 
-Il existe deux types principaux d’ACP : centrée et centrée-réduite.
-
-ACP centrée : les variables sont simplement centrées, c’est-à-dire que leur moyenne est ramenée à zéro.
-
-ACP centrée-réduite : les variables sont à la fois centrées et réduites, c’est-à-dire qu’elles ont une moyenne nulle et une variance égale à 1. Cette normalisation permet de mettre toutes les variables sur un même ordre de grandeur.
-#On utilise pour centrer et réduire les données la fonction *scale*.
-#Dans la pratique, on utilisera directement la fonction FactoMineR de R qui réalise les ACP.
-
+Il nous faut à présent décider quelle ACP est plus pertinante à analyser: l'ACP centrée et ou la centrée-réduite.On utilisera la fonction *FactoMineR* pour la suite.
 
 
 
@@ -408,25 +400,25 @@ gymC<-scale(gym[,-c(1,8)],center=TRUE, scale=FALSE)
 ```{r include=FALSE}
 respcaC<-PCA(gym,quali.sup=c(1,8),scale.unit = F,graph=F)
 #respcaC$eig
-gg1<-fviz_eig(respcaC)
+gg1<-fviz_eig(respcaC)+ggtitle(NULL)
 
    
 ```
 
 ```{r}
-#| fig-cap: " "
+#| fig-cap: " Graphique des valeurs propres pour l'ACP centrée (à gauche) et l'ACP centrée réduite (à droite) "
 #| label: "fig-11"
 
 respca<-PCA(gym,quali.sup=c(1,8),scale.unit = T,graph=F)
 #respca$eig
-gg2<-fviz_eig(respca)
+gg2<-fviz_eig(respca) + ggtitle(NULL)
 
 
 grid.arrange(gg1,gg2,ncol=2)
 ```
 On obtient sur la @fig-11 une ACP centrée (à gauche) et une ACP centrée-réduite (à droite). On peut observer les composantes principales générées dans les deux cas.
 
-On remarque que, dans le cas de l’ACP centrée (à gauche), la première composante domine fortement, ce qui rend la lecture des autres composantes difficile. Ce phénomène est dû à la variable calories, dont l’échelle, comme nous l’avions déjà observée sur la @fig-2, est beaucoup plus importante que celle des autres variables. On s’attendait donc à une première composante  fortement influencée par cette variable.
+On remarque que, dans le cas de l’ACP centrée, la première composante domine fortement, ce qui rend la lecture des autres composantes difficile. Ce phénomène est dû à la variable calories, dont l’échelle, comme nous l’avions déjà observée sur la @fig-2, est beaucoup plus importante que celle des autres variables. On s’attendait bien à une première composante  fortement influencée par cette variable.
 
 Il est donc nécessaire de continuer l'étude en utilisant une ACP centrée- réduite.
 
@@ -435,23 +427,20 @@ Il est donc nécessaire de continuer l'étude en utilisant une ACP centrée- ré
 
 On s’intéresse à présent au concept d’**inertie**, notion centrale en ACP, qui permet de quantifier la quantité d’information contenue dans les données et de guider le choix du nombre de dimensions à conserver.
 
-L’inertie totale correspond à la dispersion globale des individus et peut être décomposée en **inerties axiales**, chacune associée à une composante principale. Pour chaque axe, on calcule ainsi la **part d’inertie expliquée**, ainsi que l’**inertie cumulée**, qui mesure la proportion d’information conservée lorsque plusieurs dimensions sont prises en compte.
-Dans cette étude, nous retenons les trois premières dimensions, dont l’inertie cumulée atteint 85,88 % ( @fig-12 ). Ce choix permet de conserver l’essentiel de l’information initiale tout en réduisant significativement la dimension des données, ce qui facilite leur visualisation et leur interprétation
+L’inertie totale correspond à  la dispersion globale du nuage des individus. Elle peut être décomposée en **inerties axiales**, chacune associée à une composante principale. 
+Pour chaque axe, on calcule ainsi la **part d’inertie expliquée**, ainsi que l’**inertie cumulée**, qui mesure la proportion d’information conservée lorsque plusieurs dimensions sont prises en compte.
 
-On pourra aussi envisager d’ajouter une quatrième dimension pour vérifier que les informations importantes sont bien prises en compte dans le modèle. **À VOIR**
 ```{r}
-#| fig-cap: " "
+#| fig-cap: " Valeurs propres et pourcentage d'inertie et d'inertie cumulée "
 #| label: "fig-12"
 respca$eig
 ```
-La Figure @fig-13 représente le taux de corrélation entre les variables quantitatives initiales et les composantes principales formées. 
-Ainsi le premiere axe (Dim1) sera négativement corrélé à la variable *fat* et positivement à *duration*, *calories* et *water*.
-Le deuxième axe (Dim2) est positivement corrélé au *bmi* et *weight*.
-**À TERMINER DE rédiger au propre et détailleé**
+Dans cette étude, nous retenons les trois premières dimensions, dont l’inertie cumulée atteint 85,88 % ( @fig-12 ). Ce choix permet de conserver l’essentiel de l’information initiale tout en réduisant significativement la dimension des données (de 7 à 3), ce qui facilite leur visualisation et leur interprétation
 
-#fig13 weight et bmi très positivement correlé, calories duration aussi entre elles,
+On pourrait aussi envisager d’ajouter une quatrième dimension pour vérifier que les informations importantes sont bien prises en compte dans le modèle. **À VOIR**
+
 ```{r}
-#| fig-cap: " "
+#| fig-cap: " Table des corrélations entre les variables quantitatives et les composantes principales de l'ACP "
 #| label: "fig-13"
 #fviz_pca_var(respca)
 #fviz_pca_var(respca,axes=c(1,3))
@@ -464,6 +453,12 @@ corrplot(respca$var$cor, method="ellipse")
 
 
 
+La Figure @fig-13 représente le taux de corrélation entre les variables quantitatives initiales et les composantes principales formées. 
+Ainsi le premiere axe (Dim1) sera négativement corrélé à la variable *fat* et positivement à *duration*, *calories* et *water*.
+Le deuxième axe (Dim2) est positivement corrélé au *bmi* et *weight*.
+**À TERMINER DE rédiger au propre et détailleé**
+
+#fig13 weight et bmi très positivement correlé, calories duration aussi entre elles,
 **À COMPARER QUAND SÛRE DE SIGNIFICATION**
 
 ```{r}
