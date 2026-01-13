@@ -427,7 +427,8 @@ Il est donc nécessaire de continuer l'étude en utilisant une ACP centrée- ré
 
 On s’intéresse à présent au concept d’**inertie**, notion centrale en ACP, qui permet de quantifier la quantité d’information contenue dans les données et de guider le choix du nombre de dimensions à conserver.
 
-L’inertie totale correspond à  la dispersion globale du nuage des individus. Elle peut être décomposée en **inerties axiales**, chacune associée à une composante principale. 
+L’inertie totale correspond à  la dispersion globale du nuage des individus, mesurée à partir des distances euclidiennes de chaque individu au centre de gravité.
+Elle peut être décomposée en **inerties axiales**, chacune associée à une composante principale. 
 Pour chaque axe, on calcule ainsi la **part d’inertie expliquée**, ainsi que l’**inertie cumulée**, qui mesure la proportion d’information conservée lorsque plusieurs dimensions sont prises en compte.
 
 ```{r}
