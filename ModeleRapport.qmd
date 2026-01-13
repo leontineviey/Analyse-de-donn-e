@@ -31,7 +31,6 @@ library(factoextra)
 library(gridExtra)
 library(knitr)
 library(reshape2)
-
 library(forcats)
 library(mclust)
 library(cluster)
@@ -57,11 +56,11 @@ L’étude s’articule autour d’une analyse unidimensionnelle et bidimensionn
 Le jeu de données que nous allons étudier dans ce rapport contient des variables décrivant les profils physiques, les pratiques d’exercice et les mesures de performance des 973 adhérents d'une salle de sport. Les variables sont de différents types: Qualitatives nominales (**gender**) ou ordinales (**level**);
 Quantitatives discrètes (**duration**,**water** et **calories**) ou continues (**weight**,**height**,**fat** et **bmi**).
 nous avons tout d'abord défini les variables qualitatives manuellement sur R avec *as.factor*.
+Vous pouvez retrouver, dans ce tableau, un résumé de chacunes des 9 variables du jeu de donnée:
 {\small
 
 ```{r}
 #| echo: false
-#| fig-cap: "Résumé des 9 variables du jeu de donnée"
 
 gym$gender<-as.factor(gym$gender)
 gym$level<-factor(gym$level,labels=c("débutant","intermédiaire","expert"))
@@ -71,7 +70,6 @@ summary(gym)
 
 ```
 }
-
 
 # Analyse descriptive
 
@@ -98,6 +96,7 @@ g2<-ggplot(df, aes(x="", y=value, fill=group))+
 grid.arrange(g1,g2,ncol=2)
 
 ```
+
 La @fig-1 représente deux graphiques différents. Le diagramme en bâtons (à gauche) illustre la répartition de l'échantillon selon le genre. La distribution est relativement équilibrée, bien que le genre "Male" prédomine légèrement. Le diagramme en secteur (à droite), illustre la répartition proportionnelle des individus selon trois niveaux de compétence. Nous pouvons observer que les catégories "débutant" et "intermédaire" sont plus importants que "expert"
 
 ### Pour une variable quantitative
@@ -122,7 +121,7 @@ grid.arrange(g3,g5,g4,ncol=3)
 ```
 Les graphiques en boîtes de la @fig-2 illustrent la tendance centrale (médiane), la dispersion (écart interquartile) ainsi que la présence de valeurs extrêmes pour plusieurs variables d'un ensemble de données. Ils permettent de souligner une forte variabilité pour le poids et les calories, et une plus grande concentration pour la taille, l'IMC et la matière grasse.
 
-Représentons la variable **Weight** pour mieux observer cette disparité.
+Représentons la variable du poids (**Weight**) pour mieux observer cette disparité.
 
 ```{r}
 #| echo: false
@@ -141,7 +140,6 @@ geom_density(color = "red", linewidth = 1) +
 ```
 Sur l'histogramme de densité de la @fig-3, nous pouvons observer que la majorité des adhérents de la salle de sport ont un poids compris entre 50 et 90 kg. On note également la présence de quelques personnes ayant un poids plus élevé dans l'échantillon (jusqu'à 130kg). 
 
- a modifier !!
 
 ```{r}
 #| echo: false
@@ -161,11 +159,10 @@ geom_density(color = "red", linewidth = 1) +
 ```
 
 
-
 ## Analyse bi-dimensionnel
 ### Entre deux variables qualitatives
 
-Nous nous intéressons dans cette partie a la corrélation des deux variables qualitatives **level** et **gender**.
+Nous nous intéressons dans cette partie à la corrélation des deux variables qualitatives **level** et **gender**.
 
 ```{r} 
 #| echo: false
@@ -179,8 +176,6 @@ profils_lignes <- prop.table(table_gym, margin = 1)
 
 
 mosaicplot(table_gym,
-           main = "Répartition de niveau par genre",
-           xlab = "Proportion de niveau conditionnelle",
            ylab = "genre",
            color = TRUE,
            las = 1, 
@@ -190,7 +185,7 @@ mosaicplot(table_gym,
 ```
 
 
-Dans la @fig-4, nous avons décidé de représenter la répartition de niveau par genre car il est plus pertinent que la répartition de genre par niveau.
+Dans la @fig-4, nous avons représenté la répartition de niveau par genre.
 Pour les femmes comme pour les hommes, le niveau débutant et le niveau intermédiaire sont les plus fréquents, tandis que le niveau expert est le moins fréquent. Les proportions entre débutant, intermédiaire et expert semblent suivre une tendance assez similaire pour les deux genres.
 
 ### entre une variable quantitative une variable qualitative 
@@ -201,7 +196,7 @@ Pour les femmes comme pour les hommes, le niveau débutant et le niveau intermé
 g2=ggplot(gym,aes(x=level,y=calories))+
 geom_boxplot()+
   labs(
-    title = "Distribustion des calories par Niveau",
+    title = "Distribustion des calories\npar Niveau",
     y = "calories",
     fill = "Niveau"
   ) +
@@ -210,8 +205,8 @@ geom_boxplot()+
 g3=ggplot(gym,aes(x=level,y=duration))+
 geom_boxplot()+
   labs(
-    title = "Distribution de la durée par Niveau",
-    y = "durée",
+    title = "Distribution de la durée\npar Niveau",
+    y = "durée (heure)",
     fill = "Niveau"
   ) +
   theme_minimal()
@@ -227,7 +222,7 @@ Nous pouvons donc observer que plus le niveau de pratique est élevé, plus la d
 
 ```{r}
 #| echo: false
-#| fig-cap: ""
+#| fig-cap: "Répartition de la consommation d'eau (en litres) selon le genre et le niveau d'intensité des pratiquants."
 #| label: "fig-6"
 #ggplot(data=gym) +
 #  geom_violin(aes(x=gender,y=fat))+
@@ -243,11 +238,10 @@ ggplot(data = gym) +
   
  
   scale_x_discrete(name = "Genre") +
-  scale_y_continuous(name = "eau") +
-  labs(color = "Niveau d'Intensité",
-       title = "Eau consommé selon le Niveau et le Genre")
+  scale_y_continuous(name = "Eau (Litre)") +
+  labs(color = "Niveau d'Intensité")
 ```
-Le graphique @fig-6 est un nuage de points permettant de comparer la quantité d'eau consommée pendant une séance, en fonction du genre et du niveau. La différence la plus importante est liée au genre: les hommes ont une consommation d'eau plus élevée que les femmes (entre 2 et 3,75 pour les hommes contre 1,5 à 2,75 pour les femmes).De plus, le niveau expert (bleu) est le seul niveau d'intensité qui se distingue nettement des deux autres.Il n'y a pas de tendance claire montrant que les intermédiaires consomment significativement plus que les débutants.
+Le graphique @fig-6 est un nuage de points permettant de comparer la quantité d'eau consommée pendant une séance, en fonction du genre et du niveau. La différence la plus importante est liée au genre: les hommes ont une consommation d'eau plus élevée que les femmes (entre 2 et 3,75 pour les hommes contre 1,5 à 2,75 pour les femmes). De plus, le niveau expert (bleu) est le seul niveau d'intensité qui se distingue nettement des deux autres. Il n'y a pas de tendance claire montrant que les intermédiaires consomment significativement plus que les débutants.
 
 ```{r}
 #| echo: false
@@ -291,7 +285,7 @@ ggplot(gym, aes(x = level, y = fat, fill = gender)) +
   scale_fill_manual(values = c("Female" = "#F8766D", "Male" = "#00BFC4"))
 
 ```
-voir si on le garde ou pas en fonction de la longueur du rapport
+a voir si on garde ou pas
 
 ### entre deux variables quantitatives
 
@@ -303,14 +297,13 @@ corrplot(cor(gymq),
          method = "ellipse",
          type = "upper",
          order = "hclust",
-         title = "Matrice de Corrélation ",
          mar = c(0, 0, 1, 0), 
          tl.cex = 0.8,
          number.cex = 0.6)
 ```
 
-la visualisation de la @fig-7 représente les coefficients de corrélation de Pearson entre les variables quantitatives du jeu de données.L'intensité de la couleur et l'aplatissement des ellipses sont proportionnels à la force de la corrélation.
-L'association la plus forte est observée entre la durée de l'entraînement et les calories brûlées (dépendance quasi-parfaite).Nous pouvons également observer une forte corrélation positive entre l'imc et le poids.
+la visualisation de la @fig-7 représente les coefficients de corrélation de Pearson entre les variables quantitatives du jeu de données. L'intensité de la couleur et l'aplatissement des ellipses sont proportionnels à la force de la corrélation.
+L'association la plus forte est observée entre la durée de l'entraînement et les calories brûlées (dépendance quasi-parfaite). Nous pouvons également observer une forte corrélation positive entre l'imc et le poids.
 La variable fat est fortement corrélée négativement avec duration, calories et water. 
 
 Nous allons maintenant explorer graphiquement certaines de ces corrélations bidimensionnelles.
@@ -376,6 +369,7 @@ ggplot(gym, aes(x = fat, y = calories)) +
   theme_minimal()
 ```
 
+voir si on garde ou pas en fonction de la place.
 
 # Statistiques multidimensionnelles (ACP)
 
@@ -475,7 +469,7 @@ Le deuxième axe (Dim2) est positivement corrélé au *bmi* et *weight*.
 ```{r}
 #Axes 1 et 2
 #| fig-cap: "Représentation des individus selon la première et la deuxième composante principale, avec une coloration en fonction du genre"
-#| label: "fig-15"
+#| label: "fig-115"
 d1<-fviz_pca_ind(respca,geom="point",habillage=as.factor(gym$gender))
 d2<-fviz_pca_ind(respca,geom="point",habillage=as.factor(gym$level))
 d1
@@ -490,7 +484,7 @@ d4 <- fviz_pca_ind(respca, axes=c(1,3),geom="point", habillage = as.factor(gym$l
 d4
 ```
 
-Dans la Figure @fig-15, on observe la dispersion des individus selon le genre sur le plan factoriel défini par les dimensions 1 et 2. En se référant à la Figure @fig-14, on peut interpréter les tendances observées : les valeurs négatives sur la dimension 1 correspondent à des profils présentant un pourcentage de masse grasse (fat) plus élevé, tandis que les valeurs positives sur la dimension 2 sont associées à des individus ayant un poids (weight) et un indice de masse corporelle (BMI) plus importants. Les valeurs positives sur la dimension 1 sont corelées positivement à la duration de l'entraînement et les calories brulées, corelées à la fois négativement sur la dimension 2.
+Dans la Figure @fig-115, on observe la dispersion des individus selon le genre sur le plan factoriel défini par les dimensions 1 et 2. En se référant à la Figure @fig-14, on peut interpréter les tendances observées : les valeurs négatives sur la dimension 1 correspondent à des profils présentant un pourcentage de masse grasse (fat) plus élevé, tandis que les valeurs positives sur la dimension 2 sont associées à des individus ayant un poids (weight) et un indice de masse corporelle (BMI) plus importants. Les valeurs positives sur la dimension 1 sont corelées positivement à la duration de l'entraînement et les calories brulées, corelées à la fois négativement sur la dimension 2.
 
 La coloration selon le genre met en évidence deux nuages de points de forme similaire, mais légèrement décalés le long d’une diagonale ascendante. Ce décalage suggère que les hommes ont, en moyenne, un poids et un BMI plus élevés que les femmes. À l’inverse, les femmes semblent présenter un pourcentage de masse grasse (*fat*) plus important.
 
@@ -510,6 +504,7 @@ Le clustering est une méthode qui permet de créer des classes pour notre nuage
 Il existe différentes critères pour choisir le nombre optimal de cluster: R-Square, Calinski-Harabasz, silhouette, Gap Statistique ... 
  
 ## Kmeans
+PEUX ETRE EXPLIQUER VITE FAIT CE QUE C4EST
 ### Choix du nombre de classes
 1) tracer évolutiom inertie intraclasse
 
@@ -653,11 +648,11 @@ ggplot(Tab,aes(y=value,axis1=clust,axis2=Var2))+
 
 La classification hiérachique est une méthode de clustering qui regroupe progressivement les individus par similitudes.
 
-Nous allons dans un permier temps comparer visuellement 3 critères différentes pour mesurer les distances entre 2 groupes différentes. Il existe 3 types de liens entre les classes: 
+### Choix du critère d'agrégation et représentation du dendrogramme
+
+Nous allons dans un permier temps choisir un critère d'agrégation pour mesurer les distances entre 2 groupes différents. Il existe 3 types de liens entre les classes: 
 Lien simple (single) : Relie les voisins les plus proches.
-
 Lien complet (complete) : Crée des classes compactes.
-
 Lien moyen (average) : Un compromis entre les deux.
 
 ```{r}
@@ -674,13 +669,10 @@ plot(hclustsingle,labels=FALSE,hang=-1)
 plot(hclustcomplete,labels=FALSE,hang=-1)
 plot(hclustaverage,labels=FALSE,hang=-1)
 
-
+#La @fig-20 permet de visualiser 3 dendogrammes utilisant chacun un type de lien différent. Nous pouvons voir dans ces différents dendrogramme que le meilleur lien est le lien moyen.
 ```
-La @fig-20 permet de visualiser 3 dendogrammes utilisant chacun un type de lien différent... A ANALYSER
-PAS SUR DE LE GARDER
 
-
-Nous allons maintenant utiliser la mesure d'agrégation de Ward. L'objectif de cette méthode est de limiter au maximum l'inertie intraclasse à chaque regroupement. Progressivement, les objets sont agglomérés les uns aux autres en respectant ce critère jusqu’à ce que le nombre de cluster souhaité soit atteint. Cette méthode est souvent utilisée car elle permet de creer des groupes homogènes.
+Nous avons retenu la méthode de Ward. Contrairement aux méthodes de liens classiques, elle ne se base pas uniquement sur la distance entre points. L'objectif de cette méthode est de limiter au maximum l'inertie intraclasse à chaque regroupement. Progressivement, les objets sont agglomérés les uns aux autres en respectant ce critère jusqu’à ce que le nombre de cluster souhaité soit atteint. Cette méthode est souvent utilisée car elle permet de creer des groupes homogènes.
 
 ```{r}
 #| echo: false
@@ -688,23 +680,23 @@ Nous allons maintenant utiliser la mesure d'agrégation de Ward. L'objectif de c
 #| label: "fig-21"
 set.seed(2)
 hward<-hclust(dist(gymq), method = "ward.D2", members = NULL)
-fviz_dend(hward,show_labels=FALSE)
+plot(hward,labels=FALSE,main = NULL,sub = "",xlab = "Individus",ylab = "Distance (Inertie)",hang=-1)
 
 ```
-La @fig‑21 présente un dendrogramme issu d’un clustering hiérarchique utilisant la méthode de Ward. L’axe vertical représente l’inertie intra‑classes On observe que les branches sont relativement équilibrées, ce qui est cohérent avec le fonctionnement de la méthode de Ward, qui cherche à minimiser l’augmentation de variance à chaque étape.
+La @fig-21 présente un dendrogramme issu d’un clustering hiérarchique utilisant la méthode de Ward. L’axe vertical représente l’inertie intra‑classes On observe que les branches sont relativement équilibrées, ce qui est cohérent avec le fonctionnement de la méthode de Ward, qui cherche à minimiser l’augmentation de variance à chaque étape.
 
 Plus on choisit un nombre de classes élevé (les fusions se font à faible hauteur), plus les clusters obtenus sont homogènes mais peu distincts. À l’inverse, un nombre de classes plus faible (fusions à grande hauteur) conduit à des clusters plus hétérogènes mais mieux séparés.
 
-Le choix du nombre de classes est donc essentiel pour une interprétation pertinente du clustering..
+Le choix du nombre de classes est donc essentiel pour une interprétation pertinente du clustering.
 
-### choix de nombre de classes
+### Choix de nombre de classes
  
 Nous allons utiliser l'indice de Calinski-Harabasz et celui de la Silhouette.
 
 
 ```{r}
 #| fig-cap: "comparaison des critères CH et silhouette pour le choix de k"
-#| label: "fig-22"
+#| label: "fig-222"
 
 Kmax<-20
 #méthode de la silhouette
@@ -716,7 +708,7 @@ for (k in 2:Kmax){
 }
 
 df<-data.frame(K=2:Kmax,Silhouette=Silhou)
-g1=ggplot(df,aes(x=K,y=Silhouette))+
+g1<-ggplot(df,aes(x=K,y=Silhouette))+
   geom_point()+
   geom_line()+
   ggtitle("Critère de la silhouette ") + 
@@ -731,7 +723,7 @@ for (k in 2:Kmax){
   CH<-c(CH,index.G1(x=gymq, cl=cutree(hward,k=k)))
 }
 daux<-data.frame(NbClust=2:Kmax,CH=CH)
-g2=ggplot(daux,aes(x=NbClust,y=CH))+
+g2<-ggplot(daux,aes(x=NbClust,y=CH))+
   geom_line()+
   geom_point()+
   ggtitle("Critère de Calinski–Harabasz ") + 
@@ -744,16 +736,26 @@ g2=ggplot(daux,aes(x=NbClust,y=CH))+
 grid.arrange(g1,g2,ncol=2)
 ```
  
-Dans la @fig-22, nous pouvons observer deux graphiques permettant de choisir le nombre de clusters optimal selon différents critères.
+Dans la @fig-222, nous pouvons observer deux graphiques permettant de choisir le nombre de clusters optimal selon différents critères.
 Le premier graphique est obtenu grâce au critère de silhouette. Pour choisir le nombre de clusters avec ce critère, il faut identifier le maximum. Le maximum global se situe à $k = 2$ (environ 0,53), ce qui correspond à la structure la mieux séparée. Cependant, un plateau significatif apparaît entre $k = 4$ et $k = 5$ (environ 0,49). Au-delà de $k = 5$, le score chute régulièrement, ce qui signifie que l'ajout de classes supplémentaires crée du "bruit" et dégrade la cohérence des groupes.
 Le deuxième graphique est obtenu grâce à l'indice de Calinski-Harabasz. Pour ce critère, on recherche généralement un pic ou un "coude" marqué sur la courbe. Un coude très net est visible à $k = 5$. Après ce point, la courbe s'aplatit : l'augmentation du score devient beaucoup plus lente par rapport à la complexité ajoutée au modèle.
 Nous avons donc choisi de retenir $k = 5$, car il représente le meilleur compromis entre les deux critères. En effet, bien que $k = 2$ soit optimal pour la silhouette, une telle analyse resterait binaire et trop simpliste pour l'interprétation de nos données.
 
 ```{r}
 #| echo: false
-
+#| eval: false
+"Dendrogramme hiérarchique utilisant la méthode Ward et montrant les différentes classes"
 k=5
 fviz_dend(hward,k)
+```
+
+
+```{r}
+#| echo: false
+#| fig-cap: "Répartition des différentes variables quantitatives dans les 5 classes obtenues"
+#| label: "fig-l22"
+
+k=5
 a=cutree(hward,k)
 
 df<-data.frame(gymq,Class=as.factor(a))
@@ -762,15 +764,22 @@ ggplot(df,aes(x=variable,y=value))+
   facet_wrap(~variable, scales = "free") +
   geom_violin(aes(fill=Class))
 
-print("Croisement avec le niveau :")
-table(gym$level,a)
-print("Croisement avec le genre :")
-table(gym$gender,a)
 ```
 
-Le partitionnement en 5 classes permet de distinguer clairement des profils comportementaux et morphologiques. La Classe 1 se détache par une activité physique intense (durée et calories élevées) associée à un régime faible en graisses, elle comprends une majorité d'hommes. La Classe 5 regroupe les individus les plus grands, tandis que la Classe 4 identifie les profils les moins actifs. Les classes 2 et 3 représentent des profils intermédiaires plus proches de la moyenne globale, la classe 2 se distinguant par une parfaite mixité homme-femme.
+```{r}
+#| echo: false
+#| layout-ncol: 2
+#| #| fig-cap: "Répartition des individus dans les classes par niveau et par genre"
+#| label: tbl-comparaison
 
-### comparaison des méthodes de clustering
+clusters <- cutree(hward, k = 5)
+knitr::kable(table(gym$level, clusters))
+
+knitr::kable(table(gym$gender, clusters))
+```
+La @fig-l22 montre la répLe partitionnement en 5 classes permet de distinguer clairement des profils comportementaux et morphologiques. La Classe 1 se détache par une activité physique intense (durée et calories élevées) associée à un régime faible en graisses, elle comprends une majorité d'hommes. La Classe 5 regroupe les individus dont l'activité est un peu moins élevé que la classe 1 mais dont le niveau est le plus proche, tandis que la Classe 4 identifie les profils les moins actifs. Les classes 2 et 3 représentent des profils intermédiaires plus proches de la moyenne globale, la classe 2 se distinguant par une parfaite mixité homme-femme.
+
+## comparaison des méthodes de clustering
 
 ```{r}
 print("Croisement entre cah et kmeans :")
@@ -792,7 +801,7 @@ ggplot(Tab,aes(y=value,axis1=clust,axis2=a))+
 
 
 ```
-
+JE PENSE QU4IL FAUT CHOISIR ENTRE LES 3 GRAPHIQUES (PAS DE PLACEEEE)
 (vite fait, manque détailler les résultats!)
 La méthode de k-means et la classification hiérarchique ascendante avec le critère de Ward sont deux approches de clustering largement utilisées pour regrouper des données numériques. La méthode de k-means est une méthode de partitionnement qui nécessite de fixer le nombre de clusters à l’avance et vise à minimiser l’inertie intra-classe. Elle est rapide et adaptée aux grands jeux de données, mais sensible à l’initialisation et suppose des clusters de forme compacte.
 
