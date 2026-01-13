@@ -61,25 +61,24 @@ nous avons tout d'abord défini les variables qualitatives manuellement sur R av
 
 ```{r}
 #| echo: false
-#| fig-cap: "résumé des 9 variables du jeu de donnée"
-#| label: "fig-l0"
+#| fig-cap: "Résumé des 9 variables du jeu de donnée"
 
 gym$gender<-as.factor(gym$gender)
 gym$level<-factor(gym$level,labels=c("débutant","intermédiaire","expert"))
 summary(gym)
- 
+
 
 
 ```
 }
-La @fig-l0 contient un résumé pour chaque variable de notre jeu de donnée.
+
 
 # Analyse descriptive
 
 ## Analyse uni-dimensionnelle
 
 ### Pour une variable qualitative
-Nous allons dans un premier temps nous interesser a la répartition des deux variables qualitatives: level et gender
+Nous allons dans un premier temps nous interesser à la répartition des deux variables qualitatives: **level** et **gender**
 
 ```{r}
 #| echo: false
@@ -123,11 +122,11 @@ grid.arrange(g3,g5,g4,ncol=3)
 ```
 Les graphiques en boîtes de la @fig-2 illustrent la tendance centrale (médiane), la dispersion (écart interquartile) ainsi que la présence de valeurs extrêmes pour plusieurs variables d'un ensemble de données. Ils permettent de souligner une forte variabilité pour le poids et les calories, et une plus grande concentration pour la taille, l'IMC et la matière grasse.
 
-Nous allons maintenant représenter la variable **Weight** pour mieux observer cette disparité
+Représentons la variable **Weight** pour mieux observer cette disparité.
 
 ```{r}
 #| echo: false
-#| fig-cap: "Historigramme représentant la densité en fonction du poids"
+#| fig-cap: "Historigramme représentant la répartition  du poids"
 #| label: "fig-3"
 ggplot(gym,aes(x=weight))+
   geom_histogram(aes(y=..density..),bins=15,color="black", fill="skyblue")+
@@ -141,6 +140,25 @@ geom_density(color = "red", linewidth = 1) +
   theme_minimal()
 ```
 Sur l'histogramme de densité de la @fig-3, nous pouvons observer que la majorité des adhérents de la salle de sport ont un poids compris entre 50 et 90 kg. On note également la présence de quelques personnes ayant un poids plus élevé dans l'échantillon (jusqu'à 130kg). 
+
+# a modifier !!
+
+```{r}
+#| echo: false
+#| eval: false
+#| fig-cap: "Historigramme représentant la répartition des calories"
+#| label: "fig-3"
+ggplot(gym,aes(x=calories))+
+  geom_histogram(aes(y=..density..),bins=15,color="black", fill="skyblue")+
+  ggtitle("Histo. des fréquences")+
+  ylab("Density")+xlab("calories")+
+
+geom_density(color = "red", linewidth = 1) +
+  labs(title = "Histogramme de Densité des calories",
+       x = "calorie (kg)",
+       y = "Densité") +
+  theme_minimal()
+```
 
 
 
