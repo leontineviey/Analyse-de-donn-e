@@ -376,12 +376,10 @@ ggplot(gym, aes(x = fat, y = calories)) +
 
 # Statistiques multidimensionnelles (ACP)
 
-On s’intéresse à présent à l’analyse du jeux de données comportant plusieurs variables étudiées simultanément. Dans la suite, seules les variables quantitatives seront prises en compte.
+Nous nous intéressons à présent à l’analyse du jeu de données comportant plusieurs variables étudiées simultanément, en ne conservant que les variables quantitatives.
+L’analyse en composantes principales construit de nouvelles variables, les **composantes principales**, qui sont des combinaisons linéaires des variables initiales et définissent un **espace factoriel** de plus faible dimension où l’on représente les individus.
 
-
-Le principe de l’analyse en composantes principales (ACP) est de réduire la dimension du jeu de données en limitant la perte d’information.
-
-Initialement, le nombre de dimensions correspond au nombre de variables quantitatives observées. L’ACP permet de construire de nouvelles variables, appelées *composantes principales*. Chacune définit un axe du nouvel espace de représentation, appelé *espace factoriel*.
+Mathématiquement, la méthode repose sur la matrice de covariance (ou de corrélation), réelle et symétrique, que l’on diagonalise : ses vecteurs propres définissent les axes factoriels et ses valeurs propres mesurent l’inertie expliquée par chaque axe(notion détaillée plus loin) , ce qui fournit des combinaisons linéaires non corrélées restituant l’essentiel de la structure des données.
 
 ## Choix de la méthode d'ACP
 
@@ -424,7 +422,7 @@ Il est donc nécessaire de continuer l'étude en utilisant une ACP centrée-réd
 ## ACP centrée réduite
 
 
-Nous nous intéressons à présent au concept d’**inertie**, notion centrale en ACP, qui permet de quantifier la quantité d’information contenue dans les données et de guider le choix du nombre de dimensions à conserver.
+Nous nous intéressons à présent au concept d’*inertie*, notion centrale en ACP, qui permet de quantifier la quantité d’information contenue dans les données et de guider le choix du nombre de dimensions à conserver.
 
 L’inertie totale correspond à  la dispersion globale du nuage des individus, mesurée à partir des distances euclidiennes de chaque individu au centre de gravité.
 Elle peut être décomposée en **inerties axiales**, chacune associée à une composante principale. 
@@ -442,20 +440,22 @@ Dans cette étude, nous retenons les trois premières dimensions, dont l’inert
 Nous pourrions envisager d’ajouter une quatrième dimension, mais cette possibilité ne sera pas explorée dans cette étude. 
 
 ```{r}
-#| fig-cap: " Table des corrélations entre les variables quantitatives et les composantes principales de l'ACP "
-#| label: "fig-13"
-#fviz_pca_var(respca)
-#fviz_pca_var(respca,axes=c(1,3))
-
-#| fig-cap: ""
 #| label: "fig-14"
+#| fig-cap: " Table des corrélations entre les variables quantitatives et les composantes principales de l'ACP "
+
 corrplot(respca$var$cor, method="ellipse")
+```
+
+```{r}
+#| eval: false
+fviz_pca_var(respca)
+fviz_pca_var(respca,axes=c(1,3))
 
 ```
 
 
 
-La  @fig-13 représente le taux de corrélation entre les variables quantitatives initiales et les composantes principales formées. 
+La  @fig-14 représente le taux de corrélation entre les variables quantitatives initiales et les composantes principales formées. 
 Ainsi le premier axe (Dim1) sera négativement corrélé à la variable *fat* et positivement à *duration*, *calories* et *water*.
 Le deuxième axe (Dim2) est positivement corrélé au *bmi* et *weight*.
 
@@ -470,9 +470,10 @@ p3<-fviz_pca_ind(respca,axes=c(2,3),geom="point")
 ```
 
 ```{r}
+#| label: "fig-115"
 #Axes 1 et 2
 #| fig-cap: "Représentation des individus selon la première et la deuxième composante principale, avec une coloration en fonction du genre"
-#| label: "fig-115"
+
 fviz_pca_ind(respca,geom="point",habillage=as.factor(gym$gender))
 
 #d2 Nous permet de comprendre la ligne droite qui vient d'expert
@@ -489,20 +490,21 @@ d3
 ```
 
 ```{r}
-#Axes 1 et 3
-#| fig-cap: " Représentation des individus selon la première et la troisième composante principale, avec une coloration en fonction du niveau"
 #| label: "fig-16"
+#| fig-cap: " Représentation des individus selon la première et la troisième composante principale, avec une coloration en fonction du niveau"
+
+#Axes 1 et 3
 fviz_pca_ind(respca, axes=c(1,3),geom="point", habillage = as.factor(gym$level))
 
 ```
 
-Dans la Figure @fig-115, nous observe la dispersion des individus selon le genre sur le plan factoriel défini par les dimensions 1 et 2. En se référant à la Figure @fig-14, nous pouvons interpréter les tendances observées : les valeurs négatives sur la dimension 1 correspondent à des profils présentant un pourcentage de masse grasse (fat) plus élevé, tandis que les valeurs positives sur la dimension 2 sont associées à des individus ayant un poids (weight) et un indice de masse corporelle (BMI) plus importants. Les valeurs positives sur la dimension 1 sont corelées positivement à la duration de l'entraînement et les calories bûlées, correlées à la fois négativement sur la dimension 2.
+Dans la @fig-115, nous observe la dispersion des individus selon le genre sur le plan factoriel défini par les dimensions 1 et 2. En se référant à la Figure @fig-14, nous pouvons interpréter les tendances observées : les valeurs négatives sur la dimension 1 correspondent à des profils présentant un pourcentage de masse grasse (fat) plus élevé, tandis que les valeurs positives sur la dimension 2 sont associées à des individus ayant un poids (weight) et un indice de masse corporelle (BMI) plus importants. Les valeurs positives sur la dimension 1 sont corelées positivement à la duration de l'entraînement et les calories bûlées, correlées à la fois négativement sur la dimension 2.
 
 La coloration selon le genre met en évidence deux nuages de points de forme similaire, mais légèrement décalés le long d’une diagonale ascendante. Ce décalage suggère que les hommes ont, en moyenne, un poids et un BMI plus élevés que les femmes. À l’inverse, les femmes semblent présenter un pourcentage de masse grasse (*fat*) plus important.
 
 La représentation met également en évidence une structure marquée le long d’une diagonale orientée vers le bas à droite, déjà présente indépendamment de la variable de coloration. Lorsque la coloration est effectuée en fonction du niveau (*level*) plutôt que du genre, nous identifions plus clairement que cette structure est principalement portée par les individus experts. Ces derniers se distinguent par des séances d’entraînement plus longues et une dépense calorique plus élevée que les individus de niveau intermédiaire ou débutant. Le décalage observé traduit également des différences de pratique entre hommes et femmes, les premiers ayant tendance à s’entraîner plus longtemps et à brûler davantage de calories.
 
-Nous changeons ensuite de plan factoriel pour analyser les dimensions 1 et 3. D’après la Figure @fig-13, la dimension 3 est fortement corrélée négativement avec la taille (*height*) et positivement avec l’indice de masse corporelle (*BMI*).
+Nous changeons ensuite de plan factoriel pour analyser les dimensions 1 et 3. D’après la Figure @fig-14, la dimension 3 est fortement corrélée négativement avec la taille (*height*) et positivement avec l’indice de masse corporelle (*BMI*).
 
 Les observations de la Figure @fig-16 apparaissent globalement moins nettes que celles du plan (Dim 1, Dim 2). Avec une coloration selon le genre, nous distinguons surtout une tendance des femmes à se projeter davantage vers les valeurs positives de la dimension 1, associées à des valeurs plus élevées de BMI, tandis que les hommes, en moyenne plus grands, tendent à se projeter vers le bas du graphique. Cette séparation reste toutefois peu marquée et s’explique sans doute par le fait que les hommes sont, en moyenne, plus grands que les femmes. La coloration selon le niveau apporte en revanche une lecture plus informative de ce plan factoriel, raison pour laquelle elle a été maintenue dans la présentation du rapport.
 
@@ -523,8 +525,8 @@ Il existe différents critères pour choisir le nombre optimal de classes : R-
 
 
 ```{r}
-#| fig-cap: " Évolution de l'inertie intraclasse en fonction du nombre de classes "
-#| label: "fig-evolintra"
+#| fig-cap: " Évolution de l'inertie intraclasse  (à gauche) et du critère de silhouette (à droite) en fonction du nombre de classes"
+#| label: "fig-evol"
 gymCR<-scale(gym[,-c(1,8)],center=TRUE, scale=TRUE)
 set.seed(3)
 Kmax<-15
@@ -537,22 +539,13 @@ for (k in 2:Kmax){
 }
 
 df<-data.frame(K=2:15,Iintra=Iintra)
-ggplot(df,aes(x=K,y=Iintra))+
+ggintra<-ggplot(df,aes(x=K,y=Iintra))+
   geom_line()+
   geom_point()+
   xlab("Nombre de classes")+
   ylab("Inertie intraclasse")
-```
-Nous appliquons l'algorithme k-means pour un nombre de classes variant de 2 à 15, pour calculer l’inertie intraclasse pour chaque partition. Cette inertie mesure la compacité des clusters : plus elle est faible, plus les individus d’un même groupe sont proches du centre de leur cluster. Le graphique correspondant (@fig-evolintra) permet ainsi d’utiliser la méthode du coude afin d’identifier une valeur de 
-k.
-Sur la courbe d’évolution de l’inertie, on observe un coude autour de 3 à 4 classes, ce qui suggère que la structure des données est raisonnablement bien capturée par une partition en 3 ou 4 clusters.
 
-
-```{r}
 set.seed(3)
-#| fig-cap: " Méthode Silhouette: Évolution du critère de silhouette en fonction de k (à gauche) et le diagramme de Silhouette (à droite) "
-#| label: "fig-sil"
-
 Silhou<-NULL
 Kmax=15
 for (k in 2:Kmax){
@@ -565,26 +558,45 @@ df<-data.frame(K=2:Kmax,Silhouette=Silhou)
 gg1<-ggplot(df,aes(x=K,y=Silhouette))+
   geom_point()+
   geom_line()+theme(legend.position = "bottom")
-aux<-silhouette(reskmeanscl[,2],daisy(gymCR))
-gg2<-fviz_silhouette(aux)+
-  theme(plot.title = element_text(size =9))
 
-grid.arrange(gg1,gg2)
+
+grid.arrange(ggintra, gg1, ncol = 2)
 ```
-Pour confirmer notre choix de k, le nombre de clusters, on fait appel à la méthode de silhouette (cf. @fig-sil).
+Nous appliquons l'algorithme k-means pour un nombre de classes variant de 2 à 15, pour calculer l’inertie intraclasse pour chaque partition. Cette inertie mesure la compacité des clusters : plus elle est faible, plus les individus d’un même groupe sont proches du centre de leur cluster. Le graphique correspondant (@fig-evol) permet ainsi d’utiliser la méthode du coude afin d’identifier une valeur de 
+k.
+Sur la courbe d’évolution de l’inertie, on observe un coude autour de 3 à 4 classes, ce qui suggère que la structure des données est raisonnablement bien capturée par une partition en 3 ou 4 clusters.
 
-Nous observons finalement un maximum de l’indice de silhouette pour k=3, ce qui confirme la pertinence d’une partition en 3 clusters. Cette valeur est cohérente avec les résultats obtenus précédemment à partir de l’évolution de l’inertie intraclasse.
+
+```{r}
+#| label: "fig-sil"
+#| fig-cap: " Diagramme de Silhouette "
+#Nous observons sur ce diagramme qu'on a quasimment pas de valeurs négatives, qui correspondent au points mal classés. Donc hoix optimal.
+
+aux<-silhouette(reskmeanscl[, 2], daisy(gymCR))
+
+gg2 <- fviz_silhouette(aux, print.summary = FALSE) +
+  theme(plot.title = element_text(size = 9))
+gg2
+
+```
+Pour confirmer notre choix de k, le nombre de clusters, on fait appel à la méthode de silhouette (voir @fig-evol).
+
+Nous observons un maximum de l’indice de silhouette pour k=
+3, valeur cohérente avec les résultats obtenus précédemment à partir de l’évolution de l’inertie intraclasse.
+Pour conclure, le diagramme de la @fig-sil montre que très peu d’individus ont une silhouette négative, ce qui correspond à des points mal classés. Cela confirme la pertinence d’une partition en trois clusters
 
 
 ### K-means: classification non supervisée avec k=3 fixé
 
-```{r}
-#|echo: false
-# à enlever?
-resacp=PCA(gym,quali.sup=c(1,8), scale.unit = TRUE,graph=FALSE)
-```
+
  
 ```{r}
+#| label: "fig-clustacp"
+#| fig-cap: "Clusters k-means projetés sur l'ACP"
+#| fig-width: 9
+#| fig-height: 6
+
+
 set.seed(2)
 gymCR<-scale(gym[,-c(1,8)],center=TRUE, scale=TRUE)
 
@@ -593,43 +605,53 @@ reskmeansFORGY <- kmeans(coord_pca, centers = 3, nstart = 10)
 fviz_cluster(reskmeansFORGY,
              data = coord_pca,
              ellipse.type = "norm",
-             geom = "point") +
-  coord_equal() +
-  ggtitle("Clusters k-means projetés sur l'ACP")
+             geom = "point",
+             pointsize=3) +
+  coord_equal()
 ```
 
 ```{r}
 #| layout-ncol: 2
-#| #| fig-cap: ""
+#| tbl-cap: ""
 #| label: tbl-tables
+set.seed(2)
+tab_niveau <- table(reskmeansFORGY$cluster, gym$level)
+rownames(tab_niveau) <- paste("Cluster", rownames(tab_niveau))
+knitr::kable(
+  tab_niveau,
+  caption = "Répartition des clusters \nselon le niveau")
+
+tab_sexe <- table(reskmeansFORGY$cluster, gym$gender)
+rownames(tab_sexe) <- paste("Cluster", rownames(tab_sexe))
 
 knitr::kable(
-  table(reskmeansFORGY$cluster, gym$level),
-  caption = "Répartition des clusters selon le niveau"
-)
+  tab_sexe,
+  caption = "Répartition des clusters selon le sexe")
 
-knitr::kable(
-  table(reskmeansFORGY$cluster, gym$gender),
-  caption = "Répartition des clusters selon le sexe"
-)
 ```
 
 ```{r}
-
+#| eval: false
+set.seed(2)
 clust<-paste("Cl-K",reskmeansFORGY$cluster,sep="")
 Tab<-melt(table(clust,gym[,1]))
 
-
-
-chordDiagram(table(clust,gym[,8]))
+chordDiagram(table(clust,gym[,1]))
+#effectifs précis d'hommes et femmes en fonction de leur niveau
+table_level_gender <- table(gym$level, gym$gender)
+table_level_gender
 ```
-Pour la suite de l’analyse, nous fixons le nombre de clusters à k=3 et nous appliquons l’algorithme des k-means selon la méthode des centres mobiles. Cette procédure vise à minimiser l’inertie intraclasse, de sorte que les individus de chaque groupe soient le plus proches possible du centre de leur cluster.​
+Pour la suite de l’analyse, nous fixons le nombre de clusters à k=3 et appliquons l’algorithme des k‑means selon la méthode des centres mobiles, afin de minimiser l’inertie intraclasse et de regrouper des individus aussi proches que possible du centre de leur cluster.
 
-La projection des résultats sur le plan factoriel de l’ACP montre trois groupes bien distincts, chacun étant associé à une zone spécifique de l’espace des composantes principales. Les ellipses de confiance permettent de visualiser la cohésion interne de chaque cluster, ainsi que la séparation globale entre les classes.​
+La projection des résultats sur le plan factoriel de l’ACP (@fig-clustacp) montre trois groupes bien distincts, chacun occupant une zone différente de l’espace des composantes principales.
+Nous observons que certains clusters occupent des régions plus compactes et homogènes, tandis qu’un autre présente une dispersion un peu plus marquée,  traduisant une plus grande hétérogénéité des profils.
 
-Nous observons que certains clusters occupent des régions plus compactes et plus homogènes, tandis qu’un autre présente une dispersion un peu plus marquée, ce qui reflète une plus grande hétérogénéité des profils correspondants. Globalement, la structure en 3 groupes reste toutefois cohérente avec les résultats obtenus précédemment sur l’inertie intraclasse et l’indice de silhouette, ce qui confirme la pertinence de ce choix de k.
+Le cluster 1 est exclusivement composé d’hommes et ne contient aucun individu de niveau expert. 
+Le cluster 2 est, au contraire, fortement associé au niveau expert (@tbl-tables): il regroupe les 90 femmes expertes et 140 hommes, ce qui correspond à l’ensemble des individus de niveau expert (101) ainsi qu’à une partie des débutants et intermédiaires.
+Le troisième cluster rassemble les profils restants, femmes et hommes de niveau intermédiaire ou débutant.
 
--->faire le point sur chaque cluster, formé de qui
+
+
 
 ## Classification hiérarchique
 
@@ -797,10 +819,11 @@ ggplot(Tab,aes(y=value,axis1=clust,axis2=a))+
 
 
 ```
-JE PENSE QU4IL FAUT CHOISIR ENTRE LES 3 GRAPHIQUES (PAS DE PLACEEEE)
-(vite fait, manque détailler les résultats!)
-La méthode de k-means et la classification hiérarchique ascendante avec le critère de Ward sont deux approches de clustering largement utilisées pour regrouper des données numériques. La méthode de k-means est une méthode de partitionnement qui nécessite de fixer le nombre de clusters à l’avance et vise à minimiser l’inertie intra-classe. Elle est rapide et adaptée aux grands jeux de données, mais sensible à l’initialisation et suppose des clusters de forme compacte.  
 
-La classification hiérarchique avec la méthode de Ward repose sur la fusion progressive des clusters en minimisant l’augmentation de l’inertie intra-classe. Elle fournit un dendrogramme permettant de choisir le nombre de clusters a posteriori et offre une meilleure interprétabilité, au prix d’un coût computationnel plus élevé. Les deux méthodes reposent sur des critères similaires et peuvent être utilisées de manière complémentaire, Ward pour l’analyse exploratoire et k-means pour la partition finale.
+La méthode de k‑means et la classification hiérarchique ascendante avec le critère de Ward sont deux approches de clustering largement utilisées pour regrouper des données numériques. La méthode de k‑means nécessite de fixer le nombre de clusters à l’avance et vise à minimiser l’inertie intra‑classe. Elle est rapide et adaptée aux grands jeux de données, mais sensible à l’initialisation et suppose des clusters de forme compacte.
 
+La classification hiérarchique avec la méthode de Ward repose, au contraire, sur la fusion progressive des clusters en minimisant l’augmentation de l’inertie intra‑classe. Elle fournit un dendrogramme permettant de choisir le nombre de clusters a posteriori et offre une meilleure interprétabilité, au prix d’un coût computationnel plus élevé. Les deux méthodes reposent sur des critères similaires et peuvent être utilisées de manière complémentaire, la méthode de Ward pour l’analyse exploratoire et k‑means pour la partition finale.
 
+Le tableau de croisement entre les deux partitions montre que les clusters 1 et 5 de la classification hiérarchique regroupent la majorité des individus du cluster 2 obtenu par k‑means (98 et 101 observations), ce qui traduit une bonne stabilité de ce groupe entre les deux méthodes. À l’inverse, le cluster 3 de k‑means est réparti principalement entre les clusters 2, 3 et 4 de la méthode de Ward, qui en propose une découpe plus fine. Le cluster 1 de k‑means apparaît enfin comme le plus hétérogène, étant éclaté sur plusieurs clusters hiérarchiques, ce qui suggère une structure moins nette pour ce groupe.
+
+# Conclusion
