@@ -179,27 +179,26 @@ Nous nous intéressons dans cette partie à la corrélation des deux variables q
 table_gym <- table(gym$gender, gym$level)
 
 profils_lignes <- prop.table(table_gym, margin = 1)
-
-
-
 mosaicplot(table_gym,
            ylab = "",
            color = TRUE,
            main = "",
            las = 1, 
            cex.axis = 0.8)
-           
 
 ```
-
 
 Dans la @fig-4, nous avons représenté la répartition de niveau par genre.
 Pour les femmes comme pour les hommes, le niveau débutant et le niveau intermédiaire sont les plus fréquents, tandis que le niveau expert est le moins fréquent. Les proportions entre débutant, intermédiaire et expert semblent suivre une tendance assez similaire pour les deux genres.
 
+
+# Affichage du résultat
+print(test_khi2) [insérer votre p-value], nous [pouvons / ne pouvons pas] conclure à une dépendance significative entre le genre et le niveau de pratique des adhérents."
+
 ### Entre une variable quantitative et une variable qualitative 
 ```{r}
 #| echo: false
-#| fig-cap: "Boxplot de différentes variables pour chaque modalité de la variable qualitative **level**"
+#| fig-cap: "Boxplot de différentes variables pour chaque modalité de la variable qualitative *level*"
 #| label: "fig-5"
 g2=ggplot(gym,aes(x=level,y=calories))+
 geom_boxplot()+
@@ -216,7 +215,7 @@ geom_boxplot()+
   labs(
     title = "Distribution de la durée\npar Niveau",
     x = "",
-    y = "durée (heure)",
+    y = "Durée (heure)",
     fill = "Niveau"
   ) +
   theme_minimal()
@@ -225,7 +224,7 @@ geom_boxplot()+
 grid.arrange (g2,g3,ncol=2)
 ```
 
-La @fig-5 représente différents diagrammes en boîte (boxplots) montrant une corrélation positive et marquée entre les variables quantitatives **calories** et **duration** avec la variable qualitative **level**.
+La @fig-5 représente différents diagrammes en boîte (boxplots) montrant une corrélation positive et marquée entre les variables quantitatives *calories* et *duration* avec la variable qualitative *level*.
 De plus nous pouvons observer dans les deux graphiques une variance plus importante chez les débutants.
 
 Nous pouvons donc observer que plus le niveau de pratique est élevé, plus la durée de l'entraînement est longue et plus les calories brûlées sont élevées. Cela est par conséquent conforme aux attentes.
@@ -276,7 +275,7 @@ ggplot(data = gym) +
 
 ```{r}
 
-#| echo: false
+#| eval: false
 
 ggplot(gym, aes(x = level, y = fat, fill = gender)) +
   
@@ -295,7 +294,7 @@ ggplot(gym, aes(x = level, y = fat, fill = gender)) +
   scale_fill_manual(values = c("Female" = "#F8766D", "Male" = "#00BFC4"))
 
 ```
-a voir si on garde ou pas
+
 
 ### Entre deux variables quantitatives
 
@@ -312,9 +311,9 @@ corrplot(cor(gymq),
          number.cex = 0.6)
 ```
 
-la visualisation de la @fig-7 représente les coefficients de corrélation de Pearson entre les variables quantitatives du jeu de données. L'intensité de la couleur et l'aplatissement des ellipses sont proportionnels à la force de la corrélation.
+La @fig-7 représente les coefficients de corrélation de Pearson entre les variables quantitatives du jeu de données. L'intensité de la couleur et l'aplatissement des ellipses sont proportionnels à la force de la corrélation.
 L'association la plus forte est observée entre la durée de l'entraînement et les calories brûlées (dépendance quasi-parfaite). Nous pouvons également observer une forte corrélation positive entre l'imc et le poids.
-La variable fat est fortement corrélée négativement avec duration, calories et water. 
+La variable *fat* est fortement corrélée négativement avec *duration*, *calories* et *water*. 
 
 Nous allons maintenant explorer graphiquement certaines de ces corrélations bidimensionnelles.
 
@@ -325,7 +324,7 @@ Nous allons maintenant explorer graphiquement certaines de ces corrélations bid
 g1=ggplot(gym, aes(x = duration, y = calories)) +
   geom_point(alpha = 0.6, size = 2, color = "purple") + 
   geom_smooth(method = "lm", color = "red") +         
-  labs(title = "Calories brûlées en fonction de la Durée",
+  labs(title = "Calories brûlées en \nfonction de la durée",
        x = "Durée  (h)",
        y = "Calories") 
 
@@ -348,10 +347,11 @@ grid.arrange(g1,g3,ncol=2)
 
 ```
 Dans la @fig-8 nous pouvons observer deux nuages de points montrant une corrélation positive et forte entre les variables.
-Le graphique de gauche confirme la très forte corrélation entre les variables **duration** et **calories**. Ces observations ne sont pas étonnantes car la dépense énergétique (calories) est, par définition physique, une fonction du temps. 
+Le graphique de gauche confirme la très forte corrélation entre les variables *duration* et *calories*. Ces observations ne sont pas étonnantes car la dépense énergétique (calories) est, par définition physique, une fonction du temps. 
 Le graphique de droite montre quant à lui la forte corrélation entre le poids et l'IMC.C'est une relation attendue, car le poids est un facteur déterminant dans le calcul de l'IMC (IMC = $\text{Poids} / (\text{Taille}^2)$)
 
 ```{r}
+#figures 9  représentation de deux corrélations négatives (graisse-durée et calorie-graisse)
 #| echo: false
 #| eval: false
 #| fig-cap: ""
@@ -363,10 +363,7 @@ ggplot(gym, aes(x = duration, y = fat)) +
        x = "durée (h)",
        y = "graisse") 
 
-```
-```{r}
-#| fig-cap: ""
-#| label: "fig-10"
+
 ggplot(gym, aes(x = fat, y = calories)) +
   geom_point(alpha = 0.6, size = 2, color = "pink") +
   geom_smooth(method = "lm", color = "darkred") +
@@ -379,11 +376,10 @@ ggplot(gym, aes(x = fat, y = calories)) +
   theme_minimal()
 ```
 
-voir si on garde ou pas en fonction de la place.
 
 # Statistiques multidimensionnelles (ACP)
 
-On s’intéresse à présent à l’analyse de jeux de données comportant plus de deux variables. Dans la suite, seules les variables quantitatives seront prises en compte.
+On s’intéresse à présent à l’analyse du jeux de données comportant plusieurs variables étudiées simultanément. Dans la suite, seules les variables quantitatives seront prises en compte.
 
 
 Le principe de l’analyse en composantes principales (ACP) est de réduire la dimension du jeu de données en limitant la perte d’information.
@@ -392,7 +388,7 @@ Initialement, le nombre de dimensions correspond au nombre de variables quantita
 
 ## Choix de la méthode d'ACP
 
-Il nous faut à présent décider quelle ACP est plus pertinente à analyser: l'ACP centrée et ou la centrée-réduite.On utilisera la fonction *FactoMineR* pour la suite.
+Il nous faut à présent décider quelle ACP est la plus pertinente à analyser: l'ACP centrée ou la centrée-réduite. Nous utiliserons la fonction *FactoMineR* pour la suite.
 
 
 
@@ -404,7 +400,8 @@ gymC<-scale(gym[,-c(1,8)],center=TRUE, scale=FALSE)
 ```{r include=FALSE}
 respcaC<-PCA(gym,quali.sup=c(1,8),scale.unit = F,graph=F)
 #respcaC$eig
-gg1<-fviz_eig(respcaC)+ggtitle(NULL)
+gg1<-fviz_eig(respcaC, 
+              ylab = "Pourcentage de variance expliquée")+ggtitle(NULL) 
 
    
 ```
@@ -415,35 +412,37 @@ gg1<-fviz_eig(respcaC)+ggtitle(NULL)
 
 respca<-PCA(gym,quali.sup=c(1,8),scale.unit = T,graph=F)
 #respca$eig
-gg2<-fviz_eig(respca) + ggtitle(NULL)
+gg2<-fviz_eig(respca,
+              ylab = "Pourcentage de variance expliquée") + ggtitle(NULL)
 
 
 grid.arrange(gg1,gg2,ncol=2)
 ```
-On obtient sur la @fig-11 une ACP centrée (à gauche) et une ACP centrée-réduite (à droite). On peut observer les composantes principales générées dans les deux cas.
+Nous obtenons sur la @fig-11 une ACP centrée (à gauche) et une ACP centrée-réduite (à droite). Nous pouvons observer les composantes principales générées dans les deux cas.
 
-On remarque que, dans le cas de l’ACP centrée, la première composante domine fortement, ce qui rend la lecture des autres composantes difficile. Ce phénomène est dû à la variable calories, dont l’échelle, comme nous l’avions déjà observée sur la @fig-2, est beaucoup plus importante que celle des autres variables. On s’attendait bien à une première composante  fortement influencée par cette variable.
+Nous remarquons que, dans le cas de l’ACP centrée, la première composante domine fortement, ce qui rend la lecture des autres composantes difficile. Ce phénomène est dû à la variable calories, dont l’échelle, comme nous l’avions déjà observée sur la @fig-2, est beaucoup plus importante que celle des autres variables. Nous nous attendions bien à une première composante  fortement influencée par cette variable.
 
-Il est donc nécessaire de continuer l'étude en utilisant une ACP centrée- réduite.
+Il est donc nécessaire de continuer l'étude en utilisant une ACP centrée-réduite.
 
 ## ACP centrée réduite
 
 
-On s’intéresse à présent au concept d’**inertie**, notion centrale en ACP, qui permet de quantifier la quantité d’information contenue dans les données et de guider le choix du nombre de dimensions à conserver.
+Nous nous intéressons à présent au concept d’**inertie**, notion centrale en ACP, qui permet de quantifier la quantité d’information contenue dans les données et de guider le choix du nombre de dimensions à conserver.
 
 L’inertie totale correspond à  la dispersion globale du nuage des individus, mesurée à partir des distances euclidiennes de chaque individu au centre de gravité.
 Elle peut être décomposée en **inerties axiales**, chacune associée à une composante principale. 
-Pour chaque axe, on calcule ainsi la **part d’inertie expliquée**, ainsi que l’**inertie cumulée**, qui mesure la proportion d’information conservée lorsque plusieurs dimensions sont prises en compte.
+Pour chaque axe, est calculée ainsi la **part d’inertie expliquée**, ainsi que l’**inertie cumulée**, qui mesure la proportion d’information conservée lorsque plusieurs dimensions sont prises en compte.
 
 ```{r}
-#| fig-cap: " Valeurs propres et pourcentage d'inertie et d'inertie cumulée "
-#| label: "fig-11b"
-respca$eig
-
+#| label: tbl-1
+#| tbl-cap: "Valeurs propres et pourcentages d'inertie expliquée et cumulée"
+kable(
+  respcaC$eig,
+)
 ```
-Dans cette étude, nous retenons les trois premières dimensions, dont l’inertie cumulée atteint 85,88% ( @fig-11b ). Ce choix permet de conserver l’essentiel de l’information initiale tout en réduisant significativement la dimension des données (de 7 à 3), ce qui facilite leur visualisation et leur interprétation
+Dans cette étude, nous retenons les trois premières dimensions, dont l’inertie cumulée atteint 85,88% (@tbl-1). Ce choix permet de conserver l’essentiel de l’information initiale tout en réduisant significativement la dimension des données (de 7 à 3), ce qui facilite leur visualisation et leur interprétation
 
-On pourrait aussi envisager d’ajouter une quatrième dimension pour vérifier que les informations importantes sont bien prises en compte dans le modèle. **À VOIR**
+Nous pourrions envisager d’ajouter une quatrième dimension, mais cette possibilité ne sera pas explorée dans cette étude. 
 
 ```{r}
 #| fig-cap: " Table des corrélations entre les variables quantitatives et les composantes principales de l'ACP "
@@ -464,15 +463,12 @@ Ainsi le premier axe (Dim1) sera négativement corrélé à la variable *fat* et
 Le deuxième axe (Dim2) est positivement corrélé au *bmi* et *weight*.
 
 
-*fig13 weight et bmi très positivement correlé, calories duration aussi entre elles,
-**À COMPARER QUAND SÛRE DE SIGNIFICATION**
-
 ```{r}
 # plans factoriels dim 1/2 et dim 1/3 et dim 2/3
-#p1<-fviz_pca_ind(respca,geom="point")
-#p2<-fviz_pca_ind(respca,axes=c(1,3),geom="point")
-#p3<-fviz_pca_ind(respca,axes=c(2,3),geom="point")
-#grid.arrange(p1,p2,ncol=2)
+#| eval: false
+p1<-fviz_pca_ind(respca,geom="point")
+p2<-fviz_pca_ind(respca,axes=c(1,3),geom="point")
+p3<-fviz_pca_ind(respca,axes=c(2,3),geom="point")
 
 ```
 
@@ -480,41 +476,51 @@ Le deuxième axe (Dim2) est positivement corrélé au *bmi* et *weight*.
 #Axes 1 et 2
 #| fig-cap: "Représentation des individus selon la première et la deuxième composante principale, avec une coloration en fonction du genre"
 #| label: "fig-115"
-d1<-fviz_pca_ind(respca,geom="point",habillage=as.factor(gym$gender))
-d2<-fviz_pca_ind(respca,geom="point",habillage=as.factor(gym$level))
-d1
-#d2 Nous permet de comprendre la ligne droite qui vient d'expert
+fviz_pca_ind(respca,geom="point",habillage=as.factor(gym$gender))
 
+#d2 Nous permet de comprendre la ligne droite qui vient d'expert
+```
+```{r}
+#| eval: false
+d2<-fviz_pca_ind(respca,geom="point",habillage=as.factor(gym$level))
+#d2 Nous permet de comprendre la ligne droite qui vient d'expert
+d2
+
+d3<-fviz_pca_ind(respca,axes=c(1,3),geom="point", habillage=as.factor(gym$gender))
+d3
+#d3 
+```
+
+```{r}
 #Axes 1 et 3
 #| fig-cap: " Représentation des individus selon la première et la troisième composante principale, avec une coloration en fonction du niveau"
 #| label: "fig-16"
-d3<-fviz_pca_ind(respca,axes=c(1,3),geom="point", habillage=as.factor(gym$gender))
-d4 <- fviz_pca_ind(respca, axes=c(1,3),geom="point", habillage = as.factor(gym$level))
-#d3
-d4
+fviz_pca_ind(respca, axes=c(1,3),geom="point", habillage = as.factor(gym$level))
+
 ```
 
-Dans la Figure @fig-115, on observe la dispersion des individus selon le genre sur le plan factoriel défini par les dimensions 1 et 2. En se référant à la Figure @fig-14, on peut interpréter les tendances observées : les valeurs négatives sur la dimension 1 correspondent à des profils présentant un pourcentage de masse grasse (fat) plus élevé, tandis que les valeurs positives sur la dimension 2 sont associées à des individus ayant un poids (weight) et un indice de masse corporelle (BMI) plus importants. Les valeurs positives sur la dimension 1 sont corelées positivement à la duration de l'entraînement et les calories bûlées, correlées à la fois négativement sur la dimension 2.
+Dans la Figure @fig-115, nous observe la dispersion des individus selon le genre sur le plan factoriel défini par les dimensions 1 et 2. En se référant à la Figure @fig-14, nous pouvons interpréter les tendances observées : les valeurs négatives sur la dimension 1 correspondent à des profils présentant un pourcentage de masse grasse (fat) plus élevé, tandis que les valeurs positives sur la dimension 2 sont associées à des individus ayant un poids (weight) et un indice de masse corporelle (BMI) plus importants. Les valeurs positives sur la dimension 1 sont corelées positivement à la duration de l'entraînement et les calories bûlées, correlées à la fois négativement sur la dimension 2.
 
 La coloration selon le genre met en évidence deux nuages de points de forme similaire, mais légèrement décalés le long d’une diagonale ascendante. Ce décalage suggère que les hommes ont, en moyenne, un poids et un BMI plus élevés que les femmes. À l’inverse, les femmes semblent présenter un pourcentage de masse grasse (*fat*) plus important.
 
-La représentation met également en évidence une structure marquée le long d’une diagonale orientée vers le bas à droite, déjà présente indépendamment de la variable de coloration. Lorsque la coloration est effectuée en fonction du niveau (*level*) plutôt que du genre, on identifie plus clairement que cette structure est principalement portée par les individus experts. Ces derniers se distinguent par des séances d’entraînement plus longues et une dépense calorique plus élevée que les individus de niveau intermédiaire ou débutant. Le décalage observé traduit également des différences de pratique entre hommes et femmes, les premiers ayant tendance à s’entraîner plus longtemps et à brûler davantage de calories.
+La représentation met également en évidence une structure marquée le long d’une diagonale orientée vers le bas à droite, déjà présente indépendamment de la variable de coloration. Lorsque la coloration est effectuée en fonction du niveau (*level*) plutôt que du genre, nous identifions plus clairement que cette structure est principalement portée par les individus experts. Ces derniers se distinguent par des séances d’entraînement plus longues et une dépense calorique plus élevée que les individus de niveau intermédiaire ou débutant. Le décalage observé traduit également des différences de pratique entre hommes et femmes, les premiers ayant tendance à s’entraîner plus longtemps et à brûler davantage de calories.
 
-On change ensuite de plan factoriel pour analyser les dimensions 1 et 3. D’après la Figure @fig-13, la dimension 3 est fortement corrélée négativement avec la taille (*height*) et positivement avec l’indice de masse corporelle (*BMI*).
+Nous changeons ensuite de plan factoriel pour analyser les dimensions 1 et 3. D’après la Figure @fig-13, la dimension 3 est fortement corrélée négativement avec la taille (*height*) et positivement avec l’indice de masse corporelle (*BMI*).
 
-Les observations de la Figure @fig-16 apparaissent globalement moins nettes que celles du plan (Dim 1, Dim 2). Avec une coloration selon le genre, on distingue surtout une tendance des femmes à se projeter davantage vers les valeurs positives de la dimension 1, associées à des valeurs plus élevées de BMI, tandis que les hommes, en moyenne plus grands, tendent à se projeter vers le bas du graphique. Cette séparation reste toutefois peu marquée et s’explique sans doute par le fait que les hommes sont, en moyenne, plus grands que les femmes. La coloration selon le niveau apporte en revanche une lecture plus informative de ce plan factoriel, raison pour laquelle elle a été maintenue dans la présentation du rapport.
+Les observations de la Figure @fig-16 apparaissent globalement moins nettes que celles du plan (Dim 1, Dim 2). Avec une coloration selon le genre, nous distinguons surtout une tendance des femmes à se projeter davantage vers les valeurs positives de la dimension 1, associées à des valeurs plus élevées de BMI, tandis que les hommes, en moyenne plus grands, tendent à se projeter vers le bas du graphique. Cette séparation reste toutefois peu marquée et s’explique sans doute par le fait que les hommes sont, en moyenne, plus grands que les femmes. La coloration selon le niveau apporte en revanche une lecture plus informative de ce plan factoriel, raison pour laquelle elle a été maintenue dans la présentation du rapport.
 
-On en déduit que les individus de niveau expert suivent des entraînements de plus longue durée et présentent une dépense calorique plus élevée.  En revanche, aucun lien net n’apparaît entre la taille et le BMI dans ce plan factoriel.
+Nous en déduisons que les individus de niveau expert suivent des entraînements de plus longue durée et présentent une dépense calorique plus élevée.  En revanche, aucun lien net n’apparaît entre la taille et le BMI dans ce plan factoriel.
 
-On ne s’attardera pas sur le plan factoriel défini par les dimensions 2 et 3, leur inertie expliquée étant nettement plus faible que celle de la dimension 1, que l’on a donc choisi de privilégier dans l’analyse. L’ensemble des résultats obtenus apparaît par ailleurs cohérent avec les interprétations précédentes et les relations mises en évidence entre les variables.
+Nous ne nous attarderont pas sur le plan factoriel défini par les dimensions 2 et 3, leur inertie expliquée étant nettement plus faible que celle de la dimension 1, que l’on a donc choisi de privilégier dans l’analyse. L’ensemble des résultats obtenus apparaît par ailleurs cohérent avec les interprétations précédentes et les relations mises en évidence entre les variables.
 
 # Clustering
 
-Le clustering est une méthode qui permet de créer des classes pour notre nuage de données, sans connaître les attributs. Pour ce faire, nous allons déterminer le nombre de classes à choisir pour obtenir un clustering optimal.
-Il existe différents critères pour choisir le nombre optimal de cluster: R-Square, Calinski-Harabasz, silhouette, Gap Statistique ... 
+Le clustering est une méthode qui permet de regrouper des observations en classes au sein d’un nuage de données, sans connaître à l’avance les groupes ou les attributs qui les définissent.
+Nous allons mettre en œuvre deux méthodes de clustering (k‑means et classification hiérarchique), puis comparer les partitions obtenues.
+Pour ce faire, nous déterminerons, pour chacune de ces méthodes, le nombre de classes à retenir afin d’obtenir un partitionnement aussi pertinent que possible.
+Il existe différents critères pour choisir le nombre optimal de classes : R-Square, l'indice de Calinski‑Harabasz, coefficient de silhouette, statistique du Gap, etc. 
  
 ## Méthode Kmeans
-PEUX ETRE EXPLIQUER VITE FAIT CE QUE C4EST
 
 ### Choix du nombre de classes
 
@@ -540,7 +546,7 @@ ggplot(df,aes(x=K,y=Iintra))+
   xlab("Nombre de classes")+
   ylab("Inertie intraclasse")
 ```
-On applique l'algorithme k-means pour un nombre de classes variant de 2 à 15, pour calculer l’inertie intraclasse pour chaque partition. Cette inertie mesure la compacité des clusters : plus elle est faible, plus les individus d’un même groupe sont proches du centre de leur cluster. Le graphique correspondant (Figure @fig-evolintra) permet ainsi d’utiliser la méthode du coude afin d’identifier une valeur de 
+Nous appliquons l'algorithme k-means pour un nombre de classes variant de 2 à 15, pour calculer l’inertie intraclasse pour chaque partition. Cette inertie mesure la compacité des clusters : plus elle est faible, plus les individus d’un même groupe sont proches du centre de leur cluster. Le graphique correspondant (@fig-evolintra) permet ainsi d’utiliser la méthode du coude afin d’identifier une valeur de 
 k.
 Sur la courbe d’évolution de l’inertie, on observe un coude autour de 3 à 4 classes, ce qui suggère que la structure des données est raisonnablement bien capturée par une partition en 3 ou 4 clusters.
 
@@ -568,9 +574,9 @@ gg2<-fviz_silhouette(aux)+
 
 grid.arrange(gg1,gg2)
 ```
-Pour confirmer notre choix de k, le nombre de clusters, on fait appel à la méthode de silhouette (cf. Figure @fig-sil).
+Pour confirmer notre choix de k, le nombre de clusters, on fait appel à la méthode de silhouette (cf. @fig-sil).
 
-On observe finalement un maximum de l’indice de silhouette pour k=3, ce qui confirme la pertinence d’une partition en 3 clusters. Cette valeur est cohérente avec les résultats obtenus précédemment à partir de l’évolution de l’inertie intraclasse.
+Nous observons finalement un maximum de l’indice de silhouette pour k=3, ce qui confirme la pertinence d’une partition en 3 clusters. Cette valeur est cohérente avec les résultats obtenus précédemment à partir de l’évolution de l’inertie intraclasse.
 
 
 ### K-means: classification non supervisée avec k=3 fixé
@@ -593,26 +599,38 @@ fviz_cluster(reskmeansFORGY,
              geom = "point") +
   coord_equal() +
   ggtitle("Clusters k-means projetés sur l'ACP")
-table(reskmeansFORGY$cluster)
-table(reskmeansFORGY$cluster, gym$level )
-table(reskmeansFORGY$cluster, gym$gender )
+```
+
+```{r}
+#| layout-ncol: 2
+#| #| fig-cap: ""
+#| label: tbl-tables
+
+knitr::kable(
+  table(reskmeansFORGY$cluster, gym$level),
+  caption = "Répartition des clusters selon le niveau"
+)
+
+knitr::kable(
+  table(reskmeansFORGY$cluster, gym$gender),
+  caption = "Répartition des clusters selon le sexe"
+)
+```
+
+```{r}
 
 clust<-paste("Cl-K",reskmeansFORGY$cluster,sep="")
 Tab<-melt(table(clust,gym[,1]))
-ggplot(Tab,aes(y=value,axis1=clust,axis2=Var2))+
-  geom_alluvium(aes(fill=clust))+
-  #geom_stratum(width = 1/12)+   
-  theme(legend.position = "none")
 
 
-chordDiagram(table(clust,gym[,1]))
+
 chordDiagram(table(clust,gym[,8]))
 ```
-Pour la suite de l’analyse, on fixe le nombre de clusters à k=3 et on applique l’algorithme des k-means selon la méthode des centres mobiles. Cette procédure vise à minimiser l’inertie intraclasse, de sorte que les individus de chaque groupe soient le plus proches possible du centre de leur cluster.​
+Pour la suite de l’analyse, nous fixons le nombre de clusters à k=3 et nous appliquons l’algorithme des k-means selon la méthode des centres mobiles. Cette procédure vise à minimiser l’inertie intraclasse, de sorte que les individus de chaque groupe soient le plus proches possible du centre de leur cluster.​
 
 La projection des résultats sur le plan factoriel de l’ACP montre trois groupes bien distincts, chacun étant associé à une zone spécifique de l’espace des composantes principales. Les ellipses de confiance permettent de visualiser la cohésion interne de chaque cluster, ainsi que la séparation globale entre les classes.​
 
-On observe que certains clusters occupent des régions plus compactes et plus homogènes, tandis qu’un autre présente une dispersion un peu plus marquée, ce qui reflète une plus grande hétérogénéité des profils correspondants. Globalement, la structure en 3 groupes reste toutefois cohérente avec les résultats obtenus précédemment sur l’inertie intraclasse et l’indice de silhouette, ce qui confirme la pertinence de ce choix de k.
+Nous observons que certains clusters occupent des régions plus compactes et plus homogènes, tandis qu’un autre présente une dispersion un peu plus marquée, ce qui reflète une plus grande hétérogénéité des profils correspondants. Globalement, la structure en 3 groupes reste toutefois cohérente avec les résultats obtenus précédemment sur l’inertie intraclasse et l’indice de silhouette, ce qui confirme la pertinence de ce choix de k.
 
 -->faire le point sur chaque cluster, formé de qui
 
@@ -622,9 +640,13 @@ La classification hiérarchique est une méthode de clustering qui regroupe prog
 
 ### Choix du critère d'agrégation et représentation du dendrogramme
 
-Nous allons dans un premier temps choisir un critère d'agrégation pour mesurer les distances entre 2 groupes différents. Il existe 3 types de liens entre les classes: 
+Nous allons dans un premier temps choisir un critère d'agrégation pour mesurer les distances entre 2 groupes différents. 
+Il existe 3 types de liens entre les classes: 
+
 Lien simple (single) : Relie les voisins les plus proches.
+
 Lien complet (complete) : Crée des classes compactes.
+
 Lien moyen (average) : Un compromis entre les deux.
 
 ```{r}
@@ -655,19 +677,19 @@ hward<-hclust(dist(gymq), method = "ward.D2", members = NULL)
 plot(hward,labels=FALSE,main = NULL,sub = "",xlab = "Individus",ylab = "Distance (Inertie)",hang=-1)
 
 ```
-La @fig-21 présente un dendrogramme issu d’un clustering hiérarchique utilisant la méthode de Ward. L’axe vertical représente l’inertie intra‑classes On observe que les branches sont relativement équilibrées, ce qui est cohérent avec le fonctionnement de la méthode de Ward, qui cherche à minimiser l’augmentation de variance à chaque étape.
+La @fig-21 présente un dendrogramme issu d’un clustering hiérarchique utilisant la méthode de Ward. L’axe vertical représente l’inertie intra‑classes Nous observons que les branches sont relativement équilibrées, ce qui est cohérent avec le fonctionnement de la méthode de Ward, qui cherche à minimiser l’augmentation de variance à chaque étape.
 
-Plus on choisit un nombre de classes élevé (les fusions se font à faible hauteur), plus les clusters obtenus sont homogènes mais peu distincts. À l’inverse, un nombre de classes plus faible (fusions à grande hauteur) conduit à des clusters plus hétérogènes mais mieux séparés.
+Plus nous choisissons un nombre de classes élevé (les fusions se font à faible hauteur), plus les clusters obtenus sont homogènes mais peu distincts. À l’inverse, un nombre de classes plus faible (fusions à grande hauteur) conduit à des clusters plus hétérogènes mais mieux séparés.
 
 Le choix du nombre de classes est donc essentiel pour une interprétation pertinente du clustering.
 
 ### Choix de nombre de classes
  
-Nous allons utiliser l'indice de Calinski-Harabasz et celui de la Silhouette.
+Nous allons utiliser l'indice de la Silhouette et celui de Calinski-Harabasz.
 
 
 ```{r}
-#| fig-cap: "comparaison des critères CH et silhouette pour le choix de k"
+#| fig-cap: "Comparaison des critères CH et silhouette pour le choix de k"
 #| label: "fig-222"
 
 Kmax<-20
@@ -698,7 +720,7 @@ daux<-data.frame(NbClust=2:Kmax,CH=CH)
 g2<-ggplot(daux,aes(x=NbClust,y=CH))+
   geom_line()+
   geom_point()+
-  ggtitle("Critère de Calinski–Harabasz ") + 
+  ggtitle("Critère de \nCalinski–Harabasz ") + 
   xlab("Nombre de clusters (k)") + 
   ylab("Indice CH")+
   theme_minimal()
@@ -710,7 +732,7 @@ grid.arrange(g1,g2,ncol=2)
  
 Dans la @fig-222, nous pouvons observer deux graphiques permettant de choisir le nombre de clusters optimal selon différents critères.
 Le premier graphique est obtenu grâce au critère de silhouette. Pour choisir le nombre de clusters avec ce critère, il faut identifier le maximum. Le maximum global se situe à $k = 2$ (environ 0,53), ce qui correspond à la structure la mieux séparée. Cependant, un plateau significatif apparaît entre $k = 4$ et $k = 5$ (environ 0,49). Au-delà de $k = 5$, le score chute régulièrement, ce qui signifie que l'ajout de classes supplémentaires crée du "bruit" et dégrade la cohérence des groupes.
-Le deuxième graphique est obtenu grâce à l'indice de Calinski-Harabasz. Pour ce critère, on recherche généralement un pic ou un "coude" marqué sur la courbe. Un coude très net est visible à $k = 5$. Après ce point, la courbe s'aplatit : l'augmentation du score devient beaucoup plus lente par rapport à la complexité ajoutée au modèle.
+Le deuxième graphique est obtenu grâce à l'indice de Calinski-Harabasz. Pour ce critère, nous recherchons généralement un pic ou un "coude" marqué sur la courbe. Un coude très net est visible à $k = 5$. Après ce point, la courbe s'aplatit : l'augmentation du score devient beaucoup plus lente par rapport à la complexité ajoutée au modèle.
 Nous avons donc choisi de retenir $k = 5$, car il représente le meilleur compromis entre les deux critères. En effet, bien que $k = 2$ soit optimal pour la silhouette, une telle analyse resterait binaire et trop simpliste pour l'interprétation de nos données.
 
 ```{r}
@@ -741,7 +763,7 @@ ggplot(df,aes(x=variable,y=value))+
 ```{r}
 #| echo: false
 #| layout-ncol: 2
-#| #| fig-cap: "Répartition des individus dans les classes par niveau et par genre"
+#| fig-cap: "Répartition des individus dans les classes par niveau et par genre"
 #| label: tbl-comparaison
 
 clusters <- cutree(hward, k = 5)
@@ -783,5 +805,5 @@ JE PENSE QU4IL FAUT CHOISIR ENTRE LES 3 GRAPHIQUES (PAS DE PLACEEEE)
 La méthode de k-means et la classification hiérarchique ascendante avec le critère de Ward sont deux approches de clustering largement utilisées pour regrouper des données numériques. La méthode de k-means est une méthode de partitionnement qui nécessite de fixer le nombre de clusters à l’avance et vise à minimiser l’inertie intra-classe. Elle est rapide et adaptée aux grands jeux de données, mais sensible à l’initialisation et suppose des clusters de forme compacte.  
 
 La classification hiérarchique avec la méthode de Ward repose sur la fusion progressive des clusters en minimisant l’augmentation de l’inertie intra-classe. Elle fournit un dendrogramme permettant de choisir le nombre de clusters a posteriori et offre une meilleure interprétabilité, au prix d’un coût computationnel plus élevé. Les deux méthodes reposent sur des critères similaires et peuvent être utilisées de manière complémentaire, Ward pour l’analyse exploratoire et k-means pour la partition finale.
-# Références
+
 
