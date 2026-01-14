@@ -827,3 +827,14 @@ La classification hiérarchique avec la méthode de Ward repose, au contraire, s
 Le tableau de croisement entre les deux partitions montre que les clusters 1 et 5 de la classification hiérarchique regroupent la majorité des individus du cluster 2 obtenu par k‑means (98 et 101 observations), ce qui traduit une bonne stabilité de ce groupe entre les deux méthodes. À l’inverse, le cluster 3 de k‑means est réparti principalement entre les clusters 2, 3 et 4 de la méthode de Ward, qui en propose une découpe plus fine. Le cluster 1 de k‑means apparaît enfin comme le plus hétérogène, étant éclaté sur plusieurs clusters hiérarchiques, ce qui suggère une structure moins nette pour ce groupe.
 
 # Conclusion
+
+Ce rapport met en évidence des profils d’adhérents différenciés en termes de morphologie, de niveau d’activité et de comportements (durée, calories, eau). L’analyse descriptive confirme des relations attendues, comme la forte liaison entre poids et IMC ou entre durée d’entraînement et calories brûlées.​
+
+L’ACP fournit une représentation synthétique de ces profils dans un espace factoriel de dimension réduite, en séparant notamment les individus à forte dépense énergétique de ceux présentant un pourcentage de masse grasse plus élevé. Les méthodes de clustering, k‑means et classification hiérarchique de Ward, révèlent des groupes d’individus cohérents, certains clusters étant très stables d’une méthode à l’autre, ce qui renforce la robustesse des conclusions.​
+
+Au final, la combinaison de ces approches offre une vue d’ensemble claire de la population étudiée et constitue une base solide pour d’éventuelles analyses complémentaires ou recommandations pratiques
+
+OU BIEN PLUS SIMPLE : 
+Ce rapport montre que les adhérents de la salle de sport se distinguent par des profils bien différenciés, à la fois sur le plan morphologique (poids, IMC, masse grasse) et sur leurs habitudes d’entraînement (durée des séances, calories brûlées, consommation d’eau). L’analyse descriptive met en évidence des relations cohérentes avec la physiologie de l’effort, comme la forte corrélation entre durée et calories ou entre poids et IMC.​
+
+L’ACP résume efficacement cette information en quelques axes factoriels, qui opposent notamment des profils très engagés dans l’entraînement à des profils aux séances plus modérées et présentant une masse grasse plus élevée. Enfin, les méthodes de clustering non supervisé, k‑means et classification hiérarchique, identifient des groupes d’individus homogènes dont les caractéristiques (niveau, genre, intensité des séances) reflètent bien la diversité des pratiques au sein de la salle de sport.
