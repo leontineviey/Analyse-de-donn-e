@@ -57,7 +57,9 @@ L’étude s’articule autour d’une analyse unidimensionnelle et bidimensionn
 Le jeu de données que nous allons étudier dans ce rapport contient des variables décrivant les profils physiques, les pratiques d’exercice et les mesures de performance des 973 adhérents d'une salle de sport. Les variables sont de différents types: qualitatives nominales (*gender*) ou ordinales (*level*);
 quantitatives discrètes (*duration*,*water* et *calories*) ou continues (*weight*,*height*,*fat* et *bmi*).
 Nous avons tout d'abord défini les variables qualitatives manuellement sur R avec *as.factor*.
+
 Vous pouvez retrouver, dans ce tableau, un résumé de chacune des 9 variables du jeu de données:
+
 \scriptsize
 
 ```{r}
@@ -77,14 +79,15 @@ summary(gym)
 ## Analyse uni-dimensionnelle
 
 ### Pour une variable qualitative
-Nous allons dans un premier temps nous intéresser à la répartition des deux variables qualitatives: **level** et **gender**
+Nous allons dans un premier temps nous intéresser à la répartition des deux variables qualitatives: *level* et *gender*
 
 ```{r}
 #| echo: false
 #| fig-cap: "Distribution des effectifs selon le sexe (gauche) et le niveau de pratique (droite)"
 #| label: "fig-1"
 g1<-ggplot(gym, aes(x=gender))+ 
-  geom_bar()
+  geom_bar()+
+  labs(x = "", y = "Effectif")
  
 
 df <- data.frame(group = levels(gym$level),
@@ -92,13 +95,16 @@ df <- data.frame(group = levels(gym$level),
 g2<-ggplot(df, aes(x="", y=value, fill=group))+
   geom_bar(width = 1, stat = "identity")+ 
   coord_polar("y", start=0)+ 
-  theme(legend.position="bottom")
+  theme(legend.position="bottom")+
+  labs(x = "", y = "")
+ 
+ 
 
 grid.arrange(g1,g2,ncol=2)
 
 ```
 
-La @fig-1 représente deux graphiques différents. Le diagramme en bâtons (à gauche) illustre la répartition de l'échantillon selon le genre. La distribution est relativement équilibrée, bien que le genre "Male" prédomine légèrement. Le diagramme en secteur (à droite), illustre la répartition proportionnelle des individus selon trois niveaux de compétence. Nous pouvons observer que les catégories *débutant* et *intermédiaire* sont plus importantes que *expert*
+La @fig-1 représente deux graphiques différents. Le diagramme en bâtons (à gauche) illustre la répartition de l'échantillon selon le genre. La distribution est relativement équilibrée, bien que le genre masculin prédomine légèrement. Le diagramme en secteur (à droite), illustre la répartition proportionnelle des individus selon trois niveaux de compétence. Nous pouvons observer que les catégories *débutant* et *intermédiaire* sont plus importantes que *expert*.
 
 ### Pour une variable quantitative
 
@@ -120,9 +126,9 @@ g4=ggplot(gym,aes(y=calories))+
 
 grid.arrange(g3,g5,g4,ncol=3)
 ```
-Les graphiques en boîtes de la @fig-2 illustrent la tendance centrale (médiane), la dispersion (écart interquartile) ainsi que la présence de valeurs extrêmes pour plusieurs variables d'un ensemble de données. Ils permettent de souligner une forte variabilité pour le poids et les calories, et une plus grande concentration pour la taille, l'IMC et la matière grasse.
+Les graphiques en boîtes de la @fig-2 illustrent la tendance centrale (médiane), la dispersion (écart interquartile) ainsi que la présence de valeurs extrêmes pour plusieurs variables d'un ensemble de données. Ils permettent de souligner une forte variabilité pour le poids et les calories, et une plus grande concentration pour la taille (*height*), l'IMC (*bmi*) et la matière grasse (*fat*).
 
-Représentons la variable du poids (*Weight*) pour mieux observer cette disparité.
+Représentons la variable *weight* pour mieux observer cette disparité.
 
 ```{r}
 #| echo: false
@@ -163,7 +169,7 @@ geom_density(color = "red", linewidth = 1) +
 ## Analyse bi-dimensionnelle
 ### Entre deux variables qualitatives
 
-Nous nous intéressons dans cette partie à la corrélation des deux variables qualitatives **level** et **gender**.
+Nous nous intéressons dans cette partie à la corrélation des deux variables qualitatives *level* et *gender*.
 
 ```{r} 
 #| echo: false
@@ -177,8 +183,9 @@ profils_lignes <- prop.table(table_gym, margin = 1)
 
 
 mosaicplot(table_gym,
-           ylab = "genre",
+           ylab = "",
            color = TRUE,
+           main = "",
            las = 1, 
            cex.axis = 0.8)
            
