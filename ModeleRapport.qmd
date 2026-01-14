@@ -564,21 +564,13 @@ On observe finalement un maximum de l’indice de silhouette pour k=3, ce qui co
 
 
 ### K-means: classification non supervisée avec k=3 fixé
--->inertie intraclasse minimale
-1)méthode des centres mobiles
-2)variante McQueen (mise à jour dun noyau à chzque itération)
-3)nuées dynamiques
-
--->extension kmeans: variables qualitatives et mixtes
 
 ```{r}
 #|echo: false
 # à enlever?
 resacp=PCA(gym,quali.sup=c(1,8), scale.unit = TRUE,graph=FALSE)
 ```
-
-
--->méthode centres mobiles QUESTION: 
+ 
 ```{r}
 #| eval: false 
 set.seed(2)
@@ -614,7 +606,13 @@ ggplot(Tab,aes(y=value,axis1=clust,axis2=Var2))+
 chordDiagram(table(clust,gym[,1]))
 chordDiagram(table(clust,gym[,8]))
 ```
+Pour la suite de l’analyse, on fixe le nombre de clusters à k=3 et on applique l’algorithme des k-means selon la méthode des centres mobiles. Cette procédure vise à minimiser l’inertie intraclasse, de sorte que les individus de chaque groupe soient le plus proches possible du centre de leur cluster.​
 
+La projection des résultats sur le plan factoriel de l’ACP montre trois groupes bien distincts, chacun étant associé à une zone spécifique de l’espace des composantes principales. Les ellipses de confiance permettent de visualiser la cohésion interne de chaque cluster, ainsi que la séparation globale entre les classes.​
+
+On observe que certains clusters occupent des régions plus compactes et plus homogènes, tandis qu’un autre présente une dispersion un peu plus marquée, ce qui reflète une plus grande hétérogénéité des profils correspondants. Globalement, la structure en 3 groupes reste toutefois cohérente avec les résultats obtenus précédemment sur l’inertie intraclasse et l’indice de silhouette, ce qui confirme la pertinence de ce choix de k.
+
+-->faire le point sur chaque cluster, formé de qui
 ```
 ## Classification hiérarchique
 
