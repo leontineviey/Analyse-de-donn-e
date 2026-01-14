@@ -1,5 +1,5 @@
 ---
-title: "Rapport analyse de donnée"
+title: "Rapport analyse de données"
 author: 
   - name: "Manas Chloé"
   - name: "Viet Léontine"
@@ -9,6 +9,7 @@ format:
   pdf:
     toc: TRUE
     toc_depth: 2
+    toc-title: "Sommaire"
     number-sections: true
     header-includes:
     - \usepackage{color}
@@ -53,11 +54,11 @@ Notre rapport a pour objectif d'analyser un jeu de données composé de `r dim(g
 
 L’étude s’articule autour d’une analyse unidimensionnelle et bidimensionnelle, suivie d’approches multidimensionnelles (ACP) et de méthodes de clustering. Certains graphiques ne figurent pas dans ce rapport pour des raisons de lisibilité, mais restent disponibles dans les fichiers Quarto associés. 
 
-Le jeu de données que nous allons étudier dans ce rapport contient des variables décrivant les profils physiques, les pratiques d’exercice et les mesures de performance des 973 adhérents d'une salle de sport. Les variables sont de différents types: Qualitatives nominales (**gender**) ou ordinales (**level**);
-Quantitatives discrètes (**duration**,**water** et **calories**) ou continues (**weight**,**height**,**fat** et **bmi**).
-nous avons tout d'abord défini les variables qualitatives manuellement sur R avec *as.factor*.
-Vous pouvez retrouver, dans ce tableau, un résumé de chacunes des 9 variables du jeu de donnée:
-{\small
+Le jeu de données que nous allons étudier dans ce rapport contient des variables décrivant les profils physiques, les pratiques d’exercice et les mesures de performance des 973 adhérents d'une salle de sport. Les variables sont de différents types: qualitatives nominales (*gender*) ou ordinales (*level*);
+quantitatives discrètes (*duration*,*water* et *calories*) ou continues (*weight*,*height*,*fat* et *bmi*).
+Nous avons tout d'abord défini les variables qualitatives manuellement sur R avec *as.factor*.
+Vous pouvez retrouver, dans ce tableau, un résumé de chacune des 9 variables du jeu de données:
+\scriptsize
 
 ```{r}
 #| echo: false
@@ -69,14 +70,14 @@ summary(gym)
 
 
 ```
-}
+\normalsize
 
 # Analyse descriptive
 
 ## Analyse uni-dimensionnelle
 
 ### Pour une variable qualitative
-Nous allons dans un premier temps nous interesser à la répartition des deux variables qualitatives: **level** et **gender**
+Nous allons dans un premier temps nous intéresser à la répartition des deux variables qualitatives: **level** et **gender**
 
 ```{r}
 #| echo: false
@@ -97,14 +98,14 @@ grid.arrange(g1,g2,ncol=2)
 
 ```
 
-La @fig-1 représente deux graphiques différents. Le diagramme en bâtons (à gauche) illustre la répartition de l'échantillon selon le genre. La distribution est relativement équilibrée, bien que le genre "Male" prédomine légèrement. Le diagramme en secteur (à droite), illustre la répartition proportionnelle des individus selon trois niveaux de compétence. Nous pouvons observer que les catégories "débutant" et "intermédaire" sont plus importants que "expert"
+La @fig-1 représente deux graphiques différents. Le diagramme en bâtons (à gauche) illustre la répartition de l'échantillon selon le genre. La distribution est relativement équilibrée, bien que le genre "Male" prédomine légèrement. Le diagramme en secteur (à droite), illustre la répartition proportionnelle des individus selon trois niveaux de compétence. Nous pouvons observer que les catégories *débutant* et *intermédiaire* sont plus importantes que *expert*
 
 ### Pour une variable quantitative
 
-Nous allons maintenant analyser les variables quantitatives du jeux de donnée.
+Nous allons maintenant analyser les variables quantitatives du jeu de données.
 ```{r}
 #| echo: false
-#| fig-cap: "Distribution des variables quantitatives représenté sous forme de boxplot"
+#| fig-cap: "Distribution des variables quantitatives représentées sous forme de boxplot"
 #| label: "fig-2"
 gymx1<-melt(gym[,-c(1,3,4,5,7,8)])
 g3=ggplot(gymx1,aes(x=variable,y=value))+
@@ -121,11 +122,11 @@ grid.arrange(g3,g5,g4,ncol=3)
 ```
 Les graphiques en boîtes de la @fig-2 illustrent la tendance centrale (médiane), la dispersion (écart interquartile) ainsi que la présence de valeurs extrêmes pour plusieurs variables d'un ensemble de données. Ils permettent de souligner une forte variabilité pour le poids et les calories, et une plus grande concentration pour la taille, l'IMC et la matière grasse.
 
-Représentons la variable du poids (**Weight**) pour mieux observer cette disparité.
+Représentons la variable du poids (*Weight*) pour mieux observer cette disparité.
 
 ```{r}
 #| echo: false
-#| fig-cap: "Historigramme représentant la répartition  du poids"
+#| fig-cap: "Histogramme représentant la répartition  du poids"
 #| label: "fig-3"
 ggplot(gym,aes(x=weight))+
   geom_histogram(aes(y=..density..),bins=15,color="black", fill="skyblue")+
@@ -159,7 +160,7 @@ geom_density(color = "red", linewidth = 1) +
 ```
 
 
-## Analyse bi-dimensionnel
+## Analyse bi-dimensionnelle
 ### Entre deux variables qualitatives
 
 Nous nous intéressons dans cette partie à la corrélation des deux variables qualitatives **level** et **gender**.
@@ -188,7 +189,7 @@ mosaicplot(table_gym,
 Dans la @fig-4, nous avons représenté la répartition de niveau par genre.
 Pour les femmes comme pour les hommes, le niveau débutant et le niveau intermédiaire sont les plus fréquents, tandis que le niveau expert est le moins fréquent. Les proportions entre débutant, intermédiaire et expert semblent suivre une tendance assez similaire pour les deux genres.
 
-### entre une variable quantitative une variable qualitative 
+### Entre une variable quantitative et une variable qualitative 
 ```{r}
 #| echo: false
 #| fig-cap: "Boxplot de différentes variables pour chaque modalité de la variable qualitative **level**"
@@ -196,8 +197,9 @@ Pour les femmes comme pour les hommes, le niveau débutant et le niveau intermé
 g2=ggplot(gym,aes(x=level,y=calories))+
 geom_boxplot()+
   labs(
-    title = "Distribustion des calories\npar Niveau",
-    y = "calories",
+    title = "Distribution des calories\npar Niveau",
+    x = "",
+    y = "Calories",
     fill = "Niveau"
   ) +
   theme_minimal()
@@ -206,6 +208,7 @@ g3=ggplot(gym,aes(x=level,y=duration))+
 geom_boxplot()+
   labs(
     title = "Distribution de la durée\npar Niveau",
+    x = "",
     y = "durée (heure)",
     fill = "Niveau"
   ) +
@@ -287,7 +290,7 @@ ggplot(gym, aes(x = level, y = fat, fill = gender)) +
 ```
 a voir si on garde ou pas
 
-### entre deux variables quantitatives
+### Entre deux variables quantitatives
 
 ```{r}
 #| echo: false
@@ -337,8 +340,8 @@ g3=ggplot(gym, aes(x = weight, y = bmi)) +
 grid.arrange(g1,g3,ncol=2)
 
 ```
-Dans la @fig-8 nous pouvons observeux deux nuages de points montrant une corrélation positive et forte entre les variables.
-Le graphique de gauche confirme la très forte corrélation entre les variables **duration** et **calories**. Ces observations ne sont pas étonnates car La dépense énergétique (calories) est, par définition physique, une fonction du temps. 
+Dans la @fig-8 nous pouvons observer deux nuages de points montrant une corrélation positive et forte entre les variables.
+Le graphique de gauche confirme la très forte corrélation entre les variables **duration** et **calories**. Ces observations ne sont pas étonnantes car la dépense énergétique (calories) est, par définition physique, une fonction du temps. 
 Le graphique de droite montre quant à lui la forte corrélation entre le poids et l'IMC.C'est une relation attendue, car le poids est un facteur déterminant dans le calcul de l'IMC (IMC = $\text{Poids} / (\text{Taille}^2)$)
 
 ```{r}
@@ -382,7 +385,7 @@ Initialement, le nombre de dimensions correspond au nombre de variables quantita
 
 ## Choix de la méthode d'ACP
 
-Il nous faut à présent décider quelle ACP est plus pertinante à analyser: l'ACP centrée et ou la centrée-réduite.On utilisera la fonction *FactoMineR* pour la suite.
+Il nous faut à présent décider quelle ACP est plus pertinente à analyser: l'ACP centrée et ou la centrée-réduite.On utilisera la fonction *FactoMineR* pour la suite.
 
 
 
@@ -450,7 +453,7 @@ corrplot(respca$var$cor, method="ellipse")
 
 
 La  @fig-13 représente le taux de corrélation entre les variables quantitatives initiales et les composantes principales formées. 
-Ainsi le premiere axe (Dim1) sera négativement corrélé à la variable *fat* et positivement à *duration*, *calories* et *water*.
+Ainsi le premier axe (Dim1) sera négativement corrélé à la variable *fat* et positivement à *duration*, *calories* et *water*.
 Le deuxième axe (Dim2) est positivement corrélé au *bmi* et *weight*.
 
 
@@ -484,7 +487,7 @@ d4 <- fviz_pca_ind(respca, axes=c(1,3),geom="point", habillage = as.factor(gym$l
 d4
 ```
 
-Dans la Figure @fig-115, on observe la dispersion des individus selon le genre sur le plan factoriel défini par les dimensions 1 et 2. En se référant à la Figure @fig-14, on peut interpréter les tendances observées : les valeurs négatives sur la dimension 1 correspondent à des profils présentant un pourcentage de masse grasse (fat) plus élevé, tandis que les valeurs positives sur la dimension 2 sont associées à des individus ayant un poids (weight) et un indice de masse corporelle (BMI) plus importants. Les valeurs positives sur la dimension 1 sont corelées positivement à la duration de l'entraînement et les calories brulées, corelées à la fois négativement sur la dimension 2.
+Dans la Figure @fig-115, on observe la dispersion des individus selon le genre sur le plan factoriel défini par les dimensions 1 et 2. En se référant à la Figure @fig-14, on peut interpréter les tendances observées : les valeurs négatives sur la dimension 1 correspondent à des profils présentant un pourcentage de masse grasse (fat) plus élevé, tandis que les valeurs positives sur la dimension 2 sont associées à des individus ayant un poids (weight) et un indice de masse corporelle (BMI) plus importants. Les valeurs positives sur la dimension 1 sont corelées positivement à la duration de l'entraînement et les calories bûlées, correlées à la fois négativement sur la dimension 2.
 
 La coloration selon le genre met en évidence deux nuages de points de forme similaire, mais légèrement décalés le long d’une diagonale ascendante. Ce décalage suggère que les hommes ont, en moyenne, un poids et un BMI plus élevés que les femmes. À l’inverse, les femmes semblent présenter un pourcentage de masse grasse (*fat*) plus important.
 
@@ -501,7 +504,7 @@ On ne s’attardera pas sur le plan factoriel défini par les dimensions 2 et 3,
 # Clustering
 
 Le clustering est une méthode qui permet de créer des classes pour notre nuage de données, sans connaître les attributs. Pour ce faire, nous allons déterminer le nombre de classes à choisir pour obtenir un clustering optimal.
-Il existe différentes critères pour choisir le nombre optimal de cluster: R-Square, Calinski-Harabasz, silhouette, Gap Statistique ... 
+Il existe différents critères pour choisir le nombre optimal de cluster: R-Square, Calinski-Harabasz, silhouette, Gap Statistique ... 
  
 ## Méthode Kmeans
 PEUX ETRE EXPLIQUER VITE FAIT CE QUE C4EST
@@ -572,17 +575,9 @@ resacp=PCA(gym,quali.sup=c(1,8), scale.unit = TRUE,graph=FALSE)
 ```
  
 ```{r}
-#| eval: false 
 set.seed(2)
 gymCR<-scale(gym[,-c(1,8)],center=TRUE, scale=TRUE)
-#reskmeansFORGY<-kmeans(gymCR[,-c(1,8)],centers=3,iter.max=150,algorithm="Forgy")
 
-table(reskmeansFORGY$cluster)
-#fviz_cluster(reskmeansFORGY,data=gym[,-c(1,8)],
-#             ellipse.type="norm",labelsize=8,
-#             geom=c("point"))+ggtitle("")
-#fviz_pca_ind(respca,col.ind=as.factor(reskmeansFORGY$cluster), 
-#             geom = c("point"),axes=c(1,2))
 coord_pca <- respca$ind$coord[, 1:2]
 reskmeansFORGY <- kmeans(coord_pca, centers = 3, nstart = 10)
 fviz_cluster(reskmeansFORGY,
@@ -591,7 +586,7 @@ fviz_cluster(reskmeansFORGY,
              geom = "point") +
   coord_equal() +
   ggtitle("Clusters k-means projetés sur l'ACP")
- 
+table(reskmeansFORGY$cluster)
 table(reskmeansFORGY$cluster, gym$level )
 table(reskmeansFORGY$cluster, gym$gender )
 
@@ -613,14 +608,14 @@ La projection des résultats sur le plan factoriel de l’ACP montre trois group
 On observe que certains clusters occupent des régions plus compactes et plus homogènes, tandis qu’un autre présente une dispersion un peu plus marquée, ce qui reflète une plus grande hétérogénéité des profils correspondants. Globalement, la structure en 3 groupes reste toutefois cohérente avec les résultats obtenus précédemment sur l’inertie intraclasse et l’indice de silhouette, ce qui confirme la pertinence de ce choix de k.
 
 -->faire le point sur chaque cluster, formé de qui
-```
+
 ## Classification hiérarchique
 
-La classification hiérachique est une méthode de clustering qui regroupe progressivement les individus par similitudes.
+La classification hiérarchique est une méthode de clustering qui regroupe progressivement les individus par similitudes.
 
 ### Choix du critère d'agrégation et représentation du dendrogramme
 
-Nous allons dans un permier temps choisir un critère d'agrégation pour mesurer les distances entre 2 groupes différents. Il existe 3 types de liens entre les classes: 
+Nous allons dans un premier temps choisir un critère d'agrégation pour mesurer les distances entre 2 groupes différents. Il existe 3 types de liens entre les classes: 
 Lien simple (single) : Relie les voisins les plus proches.
 Lien complet (complete) : Crée des classes compactes.
 Lien moyen (average) : Un compromis entre les deux.
@@ -747,18 +742,23 @@ knitr::kable(table(gym$level, clusters))
 
 knitr::kable(table(gym$gender, clusters))
 ```
-La @fig-l22 montre la répLe partitionnement en 5 classes permet de distinguer clairement des profils comportementaux et morphologiques. La Classe 1 se détache par une activité physique intense (durée et calories élevées) associée à un régime faible en graisses, elle comprends une majorité d'hommes. La Classe 5 regroupe les individus dont l'activité est un peu moins élevé que la classe 1 mais dont le niveau est le plus proche, tandis que la Classe 4 identifie les profils les moins actifs. Les classes 2 et 3 représentent des profils intermédiaires plus proches de la moyenne globale, la classe 2 se distinguant par une parfaite mixité homme-femme.
+La @fig-l22 montre la rép **¡¡¡¡¡**
+Le partitionnement en 5 classes permet de distinguer clairement des profils comportementaux et morphologiques. La Classe 1 se détache par une activité physique intense (durée et calories élevées) associée à un régime faible en graisses, elle comprend une majorité d'hommes. La Classe 5 regroupe les individus dont l'activité est un peu moins élevé que la classe 1 mais dont le niveau est le plus proche, tandis que la Classe 4 identifie les profils les moins actifs. Les classes 2 et 3 représentent des profils intermédiaires plus proches de la moyenne globale, la classe 2 se distinguant par une parfaite mixité homme-femme.
 
 ## comparaison des méthodes de clustering
 
 ```{r}
 print("Croisement entre cah et kmeans :")
-table(a,clust)
 
-clust<-paste("Cl-K",reskmeansMCQUEEN$cluster,sep="")
+
+clust<-paste("Cl-K",reskmeansFORGY$cluster,sep="")
+table(a,clust)
 Tab<-melt(table(a,clust))
 Tab$a <- factor(Tab$a)
+```
 
+```{r}
+#| eval: false
 ggplot(Tab,aes(y=value,axis1=a,axis2=clust))+
   geom_alluvium(aes(fill=a))+
   geom_stratum(width = 1/12)+
