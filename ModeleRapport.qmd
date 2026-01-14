@@ -192,8 +192,6 @@ Dans la @fig-4, nous avons représenté la répartition de niveau par genre.
 Pour les femmes comme pour les hommes, le niveau débutant et le niveau intermédiaire sont les plus fréquents, tandis que le niveau expert est le moins fréquent. Les proportions entre débutant, intermédiaire et expert semblent suivre une tendance assez similaire pour les deux genres.
 
 
-# Affichage du résultat
-print(test_khi2) [insérer votre p-value], nous [pouvons / ne pouvons pas] conclure à une dépendance significative entre le genre et le niveau de pratique des adhérents."
 
 ### Entre une variable quantitative et une variable qualitative 
 ```{r}
@@ -274,7 +272,6 @@ ggplot(data = gym) +
 
 
 ```{r}
-
 #| eval: false
 
 ggplot(gym, aes(x = level, y = fat, fill = gender)) +
@@ -351,11 +348,11 @@ Le graphique de gauche confirme la très forte corrélation entre les variables 
 Le graphique de droite montre quant à lui la forte corrélation entre le poids et l'IMC.C'est une relation attendue, car le poids est un facteur déterminant dans le calcul de l'IMC (IMC = $\text{Poids} / (\text{Taille}^2)$)
 
 ```{r}
-#figures 9  représentation de deux corrélations négatives (graisse-durée et calorie-graisse)
-#| echo: false
 #| eval: false
 #| fig-cap: ""
 #| label: "fig-9"
+
+#figures 9  représentation de deux corrélations négatives (graisse-durée et calorie-graisse)
 ggplot(gym, aes(x = duration, y = fat)) +
   geom_point(alpha = 0.6, size = 2, color = "blue") +
   geom_smooth(method = "lm") +         
@@ -762,17 +759,17 @@ ggplot(df,aes(x=variable,y=value))+
 
 ```{r}
 #| echo: false
+#| label: tbl-3
+#| tbl-cap: "Répartition des individus dans les classes par niveau et par genre"
 #| layout-ncol: 2
-#| fig-cap: "Répartition des individus dans les classes par niveau et par genre"
-#| label: tbl-comparaison
+#| caption-location: bottom
 
 clusters <- cutree(hward, k = 5)
-knitr::kable(table(gym$level, clusters))
 
+knitr::kable(table(gym$level, clusters))
 knitr::kable(table(gym$gender, clusters))
 ```
-La @fig-l22 montre la rép **¡¡¡¡¡**
-Le partitionnement en 5 classes permet de distinguer clairement des profils comportementaux et morphologiques. La Classe 1 se détache par une activité physique intense (durée et calories élevées) associée à un régime faible en graisses, elle comprend une majorité d'hommes. La Classe 5 regroupe les individus dont l'activité est un peu moins élevé que la classe 1 mais dont le niveau est le plus proche, tandis que la Classe 4 identifie les profils les moins actifs. Les classes 2 et 3 représentent des profils intermédiaires plus proches de la moyenne globale, la classe 2 se distinguant par une parfaite mixité homme-femme.
+La @fig-l22 présente une série de diagrammes en violon illustrant la distribution des variables quantitatives au sein des cinq classes issues du clustering. La @tbl-3 expose, quant à elle, la répartition des variables qualitatives par profil. Ce partitionnement en cinq groupes permet de distinguer nettement des profils comportementaux et morphologiques différenciés. La Classe 1 se détache par une activité physique intense (durée et calories élevées) associée à un régime faible en graisses, elle comprend une majorité d'hommes. La Classe 5 regroupe les individus dont l'activité est un peu moins élevé que la classe 1 mais dont le niveau est le plus proche, tandis que la Classe 4 identifie les profils les moins actifs. Les classes 2 et 3 représentent des profils intermédiaires plus proches de la moyenne globale, la classe 2 se distinguant par une parfaite mixité homme-femme.
 
 ## comparaison des méthodes de clustering
 
