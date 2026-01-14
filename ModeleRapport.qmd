@@ -503,13 +503,15 @@ On ne s’attardera pas sur le plan factoriel défini par les dimensions 2 et 3,
 Le clustering est une méthode qui permet de créer des classes pour notre nuage de données, sans connaître les attributs. Pour ce faire, nous allons déterminer le nombre de classes à choisir pour obtenir un clustering optimal.
 Il existe différentes critères pour choisir le nombre optimal de cluster: R-Square, Calinski-Harabasz, silhouette, Gap Statistique ... 
  
-## Kmeans
+## Méthode Kmeans
 PEUX ETRE EXPLIQUER VITE FAIT CE QUE C4EST
-### Choix du nombre de classes
-1) tracer évolutiom inertie intraclasse
 
-Ce code applique l’algorithme des k-means pour différents nombres de classes (de 2 à 15) et calcule l’inertie intraclasse associée à chaque partition. Le graphique obtenu permet d’utiliser la méthode du coude afin de déterminer un nombre optimal de clusters.
+### Choix du nombre de classes
+
+
 ```{r}
+#| fig-cap: " Évolution de l'inertie intraclasse en fonction du nombre de classes "
+#| label: "fig-evolintra"
 gymCR<-scale(gym[,-c(1,8)],center=TRUE, scale=TRUE)
 set.seed(3)
 Kmax<-15
@@ -528,11 +530,15 @@ ggplot(df,aes(x=K,y=Iintra))+
   xlab("Nombre de classes")+
   ylab("Inertie intraclasse")
 ```
-On observe coude soit 3 soit 4
-2)critère slihouette
-Méthode silhouette: on trouve 3 aussi(METHODE DAISY PEUT GERER VARIABLES MIXTES, J'AI MIS LES QUALITATIVE AUSSI CAR moins de valeur négatives, càd mal placées)  
+On applique l'algorithme k-means pour un nombre de classes variant de 2 à 15, pour calculer l’inertie intraclasse pour chaque partition. Cette inertie mesure la compacité des clusters : plus elle est faible, plus les individus d’un même groupe sont proches du centre de leur cluster. Le graphique correspondant (Figure @fig-evolintra) permet ainsi d’utiliser la méthode du coude afin d’identifier une valeur de 
+k.
+Sur la courbe d’évolution de l’inertie, on observe un coude autour de 3 à 4 classes, ce qui suggère que la structure des données est raisonnablement bien capturée par une partition en 3 ou 4 clusters.
+
+
 ```{r}
 set.seed(3)
+#| fig-cap: " Méthode Silhouette: Évolution du critère de silhouette en fonction de k (à gauche) et le diagramme de Silhouette (à droite) "
+#| label: "fig-sil"
 
 Silhou<-NULL
 Kmax=15
@@ -542,14 +548,20 @@ for (k in 2:Kmax){
 }
 
 df<-data.frame(K=2:Kmax,Silhouette=Silhou)
-ggplot(df,aes(x=K,y=Silhouette))+
+
+gg1<-ggplot(df,aes(x=K,y=Silhouette))+
   geom_point()+
   geom_line()+theme(legend.position = "bottom")
 aux<-silhouette(reskmeanscl[,2],daisy(gymCR))
-fviz_silhouette(aux)+
+gg2<-fviz_silhouette(aux)+
   theme(plot.title = element_text(size =9))
+
+grid.arrange(gg1,gg2)
 ```
-Ce code évalue la qualité des partitions obtenues par k-means à l’aide de l’indice de silhouette pour différents nombres de classes. La silhouette moyenne permet d’identifier le nombre optimal de clusters et complète l’analyse basée sur l’inertie intraclasse. La visualisation de la silhouette fournit une évaluation détaillée de la cohérence interne de chaque cluster.
+Pour confirmer notre choix de k, le nombre de clusters, on fait appel à la méthode de silhouette (cf. Figure @fig-sil).
+
+On observe finalement un maximum de l’indice de silhouette pour k=3, ce qui confirme la pertinence d’une partition en 3 clusters. Cette valeur est cohérente avec les résultats obtenus précédemment à partir de l’évolution de l’inertie intraclasse.
+
 
 ### K-means: classification non supervisée avec k=3 fixé
 -->inertie intraclasse minimale
@@ -559,55 +571,34 @@ Ce code évalue la qualité des partitions obtenues par k-means à l’aide de l
 
 -->extension kmeans: variables qualitatives et mixtes
 
-1)à K=.. fixé JE N'ARRIVE PAS À METTRE LES CHORDDRIAGRAM
-classification avec fonction kmeans
-combine de vins par classe?
 ```{r}
-# ACP A completer
+#|echo: false
+# à enlever?
 resacp=PCA(gym,quali.sup=c(1,8), scale.unit = TRUE,graph=FALSE)
 ```
 
--->Mcqueen: le dernier je ne sais pas l'interpréter
-```{r}
-set.seed(2)
 
-reskmeansMCQUEEN<-kmeans(gymCR[,-c(1,8)],centers=3,iter.max=150,algorithm="MacQueen")
-
-table(reskmeansMCQUEEN$cluster)
-fviz_cluster(reskmeansMCQUEEN,data=gymCR[,-c(1,8)],
-             ellipse.type="norm",labelsize=8,
-             geom=c("point"))+ggtitle("")
-fviz_pca_ind(resacp,col.ind=as.factor(reskmeansMCQUEEN$cluster), #importznte de poser as.factor
-             geom = c("point"),axes=c(1,2))
-# Apelle a un lien avec la qualite
- 
-table(reskmeansMCQUEEN$cluster, gym$level )
-table(reskmeansMCQUEEN$cluster, gym$gender )
-
-clust<-paste("Cl-K",reskmeansMCQUEEN$cluster,sep="")
-Tab<-melt(table(clust,gym[,1]))
-ggplot(Tab,aes(y=value,axis1=clust,axis2=Var2))+
-  geom_alluvium(aes(fill=clust))+
-  #geom_stratum(width = 1/12)+   
-  theme(legend.position = "none")
-chordDiagram(table(clust,gym[,1]))
-chordDiagram(table(clust,gym[,8]))
-
-```
--->méthode centres mobiles QUESTION: faut utiliser les valeurs centrées réduites ou pas?
+-->méthode centres mobiles QUESTION: 
 ```{r}
 #| eval: false 
 set.seed(2)
 gymCR<-scale(gym[,-c(1,8)],center=TRUE, scale=TRUE)
-reskmeansFORGY<-kmeans(gymCR[,-c(1,8)],centers=3,iter.max=150,algorithm="Forgy")
+#reskmeansFORGY<-kmeans(gymCR[,-c(1,8)],centers=3,iter.max=150,algorithm="Forgy")
 
 table(reskmeansFORGY$cluster)
-fviz_cluster(reskmeansFORGY,data=gym[,-c(1,8)],
-             ellipse.type="norm",labelsize=8,
-             geom=c("point"))+ggtitle("")
-fviz_pca_ind(resacp,col.ind=as.factor(reskmeansFORGY$cluster), #importznte de poser as.factor
-             geom = c("point"),axes=c(1,2))
-# Apelle a un lien avec la qualite
+#fviz_cluster(reskmeansFORGY,data=gym[,-c(1,8)],
+#             ellipse.type="norm",labelsize=8,
+#             geom=c("point"))+ggtitle("")
+#fviz_pca_ind(respca,col.ind=as.factor(reskmeansFORGY$cluster), 
+#             geom = c("point"),axes=c(1,2))
+coord_pca <- respca$ind$coord[, 1:2]
+reskmeansFORGY <- kmeans(coord_pca, centers = 3, nstart = 10)
+fviz_cluster(reskmeansFORGY,
+             data = coord_pca,
+             ellipse.type = "norm",
+             geom = "point") +
+  coord_equal() +
+  ggtitle("Clusters k-means projetés sur l'ACP")
  
 table(reskmeansFORGY$cluster, gym$level )
 table(reskmeansFORGY$cluster, gym$gender )
@@ -618,31 +609,12 @@ ggplot(Tab,aes(y=value,axis1=clust,axis2=Var2))+
   geom_alluvium(aes(fill=clust))+
   #geom_stratum(width = 1/12)+   
   theme(legend.position = "none")
+
+
+chordDiagram(table(clust,gym[,1]))
+chordDiagram(table(clust,gym[,8]))
 ```
--->nuées dynamiques
-```{r}
-#| eval: false
-set.seed(3)
-gymCR<-scale(gym[,-c(1,8)],center=TRUE, scale=TRUE)
-reskmeansND<-kmeans(gymCR[,-c(1,8)],centers=3,iter.max=150)
 
-table(reskmeansND$cluster)
-fviz_cluster(reskmeansND,data=gymCR[,-c(1,8)],
-             ellipse.type="norm",labelsize=8,
-             geom=c("point"))+ggtitle("")
-fviz_pca_ind(resacp,col.ind=as.factor(reskmeansND$cluster), #importznte de poser as.factor
-             geom = c("point"),axes=c(1,2))
-# Apelle a un lien avec la qualite
- 
-table(reskmeansND$cluster, gym$level )
-table(reskmeansND$cluster, gym$gender )
-
-clust<-paste("Cl-K",reskmeansND$cluster,sep="")
-Tab<-melt(table(clust,gymCR[,1]))
-ggplot(Tab,aes(y=value,axis1=clust,axis2=Var2))+
-  geom_alluvium(aes(fill=clust))+
-  #geom_stratum(width = 1/12)+   
-  theme(legend.position = "none")
 ```
 ## Classification hiérarchique
 
@@ -677,7 +649,7 @@ Nous avons retenu la méthode de Ward. Contrairement aux méthodes de liens clas
 ```{r}
 #| echo: false
 #| fig-cap: "Dendrogramme hiérarchique utilisant la méthode Ward"
-#| label: "fig-21"
+#| label: "fig-21" 
 set.seed(2)
 hward<-hclust(dist(gymq), method = "ward.D2", members = NULL)
 plot(hward,labels=FALSE,main = NULL,sub = "",xlab = "Individus",ylab = "Distance (Inertie)",hang=-1)
@@ -803,7 +775,7 @@ ggplot(Tab,aes(y=value,axis1=clust,axis2=a))+
 ```
 JE PENSE QU4IL FAUT CHOISIR ENTRE LES 3 GRAPHIQUES (PAS DE PLACEEEE)
 (vite fait, manque détailler les résultats!)
-La méthode de k-means et la classification hiérarchique ascendante avec le critère de Ward sont deux approches de clustering largement utilisées pour regrouper des données numériques. La méthode de k-means est une méthode de partitionnement qui nécessite de fixer le nombre de clusters à l’avance et vise à minimiser l’inertie intra-classe. Elle est rapide et adaptée aux grands jeux de données, mais sensible à l’initialisation et suppose des clusters de forme compacte.
+La méthode de k-means et la classification hiérarchique ascendante avec le critère de Ward sont deux approches de clustering largement utilisées pour regrouper des données numériques. La méthode de k-means est une méthode de partitionnement qui nécessite de fixer le nombre de clusters à l’avance et vise à minimiser l’inertie intra-classe. Elle est rapide et adaptée aux grands jeux de données, mais sensible à l’initialisation et suppose des clusters de forme compacte.  
 
 La classification hiérarchique avec la méthode de Ward repose sur la fusion progressive des clusters en minimisant l’augmentation de l’inertie intra-classe. Elle fournit un dendrogramme permettant de choisir le nombre de clusters a posteriori et offre une meilleure interprétabilité, au prix d’un coût computationnel plus élevé. Les deux méthodes reposent sur des critères similaires et peuvent être utilisées de manière complémentaire, Ward pour l’analyse exploratoire et k-means pour la partition finale.
 # Références
