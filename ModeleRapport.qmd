@@ -69,6 +69,8 @@ gym$gender<-as.factor(gym$gender)
 gym$level<-factor(gym$level,labels=c("débutant","intermédiaire","expert"))
 summary(gym)
 
+levels(gym$level) <- c("Débutant", "Intermédiaire", "Expert")
+
 
 
 ```
@@ -179,6 +181,7 @@ Nous nous intéressons dans cette partie à la corrélation des deux variables q
 table_gym <- table(gym$gender, gym$level)
 
 profils_lignes <- prop.table(table_gym, margin = 1)
+
 mosaicplot(table_gym,
            ylab = "",
            color = TRUE,
@@ -334,7 +337,7 @@ g3=ggplot(gym, aes(x = weight, y = bmi)) +
   labs(
     title = "Poids en fonction de l'imc",
     x = "Poids (kg)",
-    y = "indice de masse coporelle (IMC)"
+    y = "Indice de masse coporelle (IMC)"
   ) +
 
   theme_minimal()
@@ -471,10 +474,10 @@ p3<-fviz_pca_ind(respca,axes=c(2,3),geom="point")
 
 ```{r}
 #| label: "fig-115"
-#Axes 1 et 2
 #| fig-cap: "Représentation des individus selon la première et la deuxième composante principale, avec une coloration en fonction du genre"
 
-fviz_pca_ind(respca,geom="point",habillage=as.factor(gym$gender))
+#Axes 1 et 2
+fviz_pca_ind(respca,geom="point",habillage=as.factor(gym$gender))+ggtitle("Projection des individus sur les axes 1 et 2")
 
 #d2 Nous permet de comprendre la ligne droite qui vient d'expert
 ```
@@ -486,7 +489,7 @@ d2
 
 d3<-fviz_pca_ind(respca,axes=c(1,3),geom="point", habillage=as.factor(gym$gender))
 d3
-#d3 
+
 ```
 
 ```{r}
@@ -498,7 +501,7 @@ fviz_pca_ind(respca, axes=c(1,3),geom="point", habillage = as.factor(gym$level))
 
 ```
 
-Dans la @fig-115, nous observe la dispersion des individus selon le genre sur le plan factoriel défini par les dimensions 1 et 2. En se référant à la Figure @fig-14, nous pouvons interpréter les tendances observées : les valeurs négatives sur la dimension 1 correspondent à des profils présentant un pourcentage de masse grasse (fat) plus élevé, tandis que les valeurs positives sur la dimension 2 sont associées à des individus ayant un poids (weight) et un indice de masse corporelle (BMI) plus importants. Les valeurs positives sur la dimension 1 sont corelées positivement à la duration de l'entraînement et les calories bûlées, correlées à la fois négativement sur la dimension 2.
+Dans la @fig-115, nous observons la dispersion des individus selon le genre sur le plan factoriel défini par les dimensions 1 et 2. En se référant à la  @fig-14, nous pouvons interpréter les tendances observées : les valeurs négatives sur la dimension 1 correspondent à des profils présentant un pourcentage de masse grasse (fat) plus élevé, tandis que les valeurs positives sur la dimension 2 sont associées à des individus ayant un poids (weight) et un indice de masse corporelle (BMI) plus importants. Les valeurs positives sur la dimension 1 sont corelées positivement à la duration de l'entraînement et les calories bûlées, correlées à la fois négativement sur la dimension 2.
 
 La coloration selon le genre met en évidence deux nuages de points de forme similaire, mais légèrement décalés le long d’une diagonale ascendante. Ce décalage suggère que les hommes ont, en moyenne, un poids et un BMI plus élevés que les femmes. À l’inverse, les femmes semblent présenter un pourcentage de masse grasse (*fat*) plus important.
 
@@ -542,7 +545,7 @@ df<-data.frame(K=2:15,Iintra=Iintra)
 ggintra<-ggplot(df,aes(x=K,y=Iintra))+
   geom_line()+
   geom_point()+
-  xlab("Nombre de classes")+
+  xlab("Nombre de classes (K)")+
   ylab("Inertie intraclasse")
 
 set.seed(3)
@@ -557,7 +560,8 @@ df<-data.frame(K=2:Kmax,Silhouette=Silhou)
 
 gg1<-ggplot(df,aes(x=K,y=Silhouette))+
   geom_point()+
-  geom_line()+theme(legend.position = "bottom")
+  geom_line()+theme(legend.position = "bottom")+
+  xlab("Nombre de classes (K)")
 
 
 grid.arrange(ggintra, gg1, ncol = 2)
@@ -607,6 +611,7 @@ fviz_cluster(reskmeansFORGY,
              ellipse.type = "norm",
              geom = "point",
              pointsize=3) +
+  ggtitle(NULL)+
   coord_equal()
 ```
 
@@ -619,14 +624,14 @@ tab_niveau <- table(reskmeansFORGY$cluster, gym$level)
 rownames(tab_niveau) <- paste("Cluster", rownames(tab_niveau))
 knitr::kable(
   tab_niveau,
-  caption = "Répartition des clusters \nselon le niveau")
+  caption = "Répartition des clusters \n selon le niveau")
 
 tab_sexe <- table(reskmeansFORGY$cluster, gym$gender)
 rownames(tab_sexe) <- paste("Cluster", rownames(tab_sexe))
 
 knitr::kable(
   tab_sexe,
-  caption = "Répartition des clusters selon le sexe")
+  caption = "Répartition des clusters \n selon le sexe")
 
 ```
 
@@ -792,17 +797,22 @@ knitr::kable(table(gym$level, clusters))
 knitr::kable(table(gym$gender, clusters))
 ```
 La @fig-l22 présente une série de diagrammes en violon illustrant la distribution des variables quantitatives au sein des cinq classes issues du clustering. La @tbl-3 expose, quant à elle, la répartition des variables qualitatives par profil. Ce partitionnement en cinq groupes permet de distinguer nettement des profils comportementaux et morphologiques différenciés. La Classe 1 se détache par une activité physique intense (durée et calories élevées) associée à un régime faible en graisses, elle comprend une majorité d'hommes. La Classe 5 regroupe les individus dont l'activité est un peu moins élevé que la classe 1 mais dont le niveau est le plus proche, tandis que la Classe 4 identifie les profils les moins actifs. Les classes 2 et 3 représentent des profils intermédiaires plus proches de la moyenne globale, la classe 2 se distinguant par une parfaite mixité homme-femme.
+\newpage
 
 ## comparaison des méthodes de clustering
 
 ```{r}
-print("Croisement entre cah et kmeans :")
+#| label: tbl-4
+#| tbl-cap: "Croisement entre cah (lignes) et kmeans (colonnes)"
 
 
 clust<-paste("Cl-K",reskmeansFORGY$cluster,sep="")
-table(a,clust)
+
 Tab<-melt(table(a,clust))
 Tab$a <- factor(Tab$a)
+tablecrois=table(a,clust)
+knitr::kable(tablecrois
+             )
 ```
 
 ```{r}
