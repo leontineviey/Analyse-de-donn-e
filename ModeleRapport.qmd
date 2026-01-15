@@ -50,7 +50,7 @@ gymq=gym[,-c(1,8)]
 
 
 # Introduction
-Notre rapport a pour objectif d'analyser un jeu de données composé de `r dim(gym)[1]` individus et `r dim(gym)[2]` variables. Notre objectif tout au long de ce projet est d’examiner la structure des données, d’identifier les relations entre variables et de mettre en évidence des profils caractéristiques.
+Ce rapport a pour objectif d’analyser un jeu de données composé de `r dim(gym)[1]`  individus décrits par `r dim(gym)[2]` variables. Notre objectif tout au long de ce projet est d’examiner la structure des données, d’identifier les relations entre variables et de mettre en évidence des profils caractéristiques d’adhérents d’une salle de sport .
 
 L’étude s’articule autour d’une analyse unidimensionnelle et bidimensionnelle, suivie d’approches multidimensionnelles (ACP) et de méthodes de clustering. Certains graphiques ne figurent pas dans ce rapport pour des raisons de lisibilité, mais restent disponibles dans les fichiers Quarto associés. 
 
@@ -106,7 +106,7 @@ grid.arrange(g1,g2,ncol=2)
 
 ```
 
-La @fig-1 représente deux graphiques différents. Le diagramme en bâtons (à gauche) illustre la répartition de l'échantillon selon le genre. La distribution est relativement équilibrée, bien que le genre masculin prédomine légèrement. Le diagramme en secteur (à droite), illustre la répartition proportionnelle des individus selon trois niveaux de compétence. Nous pouvons observer que les catégories *débutant* et *intermédiaire* sont plus importantes que *expert*.
+La @fig-1 représente deux graphiques différents. Le diagramme en bâtons (à gauche) illustre la répartition de l'échantillon selon le genre. La distribution est relativement équilibrée, bien que le genre masculin prédomine légèrement. Le diagramme en secteur (à droite), illustre la répartition proportionnelle des individus selon trois niveaux de compétence. Nous pouvons observer que les catégories *débutant* et *intermédiaire* sont plus importantes que la catégorie *expert*.
 
 ### Pour une variable quantitative
 
@@ -147,7 +147,7 @@ geom_density(color = "red", linewidth = 1) +
        y = "Densité") +
   theme_minimal()
 ```
-Sur l'histogramme de densité de la @fig-3, nous pouvons observer que la majorité des adhérents de la salle de sport ont un poids compris entre 50 et 90 kg. On note également la présence de quelques personnes ayant un poids plus élevé dans l'échantillon (jusqu'à 130kg). 
+Sur l'histogramme de densité de la @fig-3, nous pouvons observer que la majorité des adhérents de la salle de sport ont un poids compris entre 50 et 90 kg. On note également la présence de quelques individus ayant un poids plus élevé dans l'échantillon (jusqu'à 130kg). 
 
 
 ```{r}
@@ -313,7 +313,7 @@ corrplot(cor(gymq),
 ```
 
 La @fig-7 représente les coefficients de corrélation de Pearson entre les variables quantitatives du jeu de données. L'intensité de la couleur et l'aplatissement des ellipses sont proportionnels à la force de la corrélation.
-L'association la plus forte est observée entre la durée de l'entraînement et les calories brûlées (dépendance quasi-parfaite). Nous pouvons également observer une forte corrélation positive entre l'imc et le poids.
+L'association la plus forte est observée entre la durée de l'entraînement et les calories brûlées (dépendance quasi-parfaite). Nous pouvons également observer une forte corrélation positive entre l'IMC et le poids.
 La variable *fat* est fortement corrélée négativement avec *duration*, *calories* et *water*. 
 
 Nous allons maintenant explorer graphiquement certaines de ces corrélations bidimensionnelles.
@@ -380,7 +380,8 @@ ggplot(gym, aes(x = fat, y = calories)) +
 
 # Statistiques multidimensionnelles (ACP)
 
-Nous nous intéressons à présent à l’analyse du jeu de données comportant plusieurs variables étudiées simultanément, en ne conservant que les variables quantitatives.
+Nous nous intéressons à l’analyse du jeu de données comportant plusieurs variables étudiées simultanément. Dans la suite, seules les variables quantitatives seront prises en compte. 
+
 L’analyse en composantes principales construit de nouvelles variables, les **composantes principales**, qui sont des combinaisons linéaires des variables initiales et définissent un **espace factoriel** de plus faible dimension où l’on représente les individus.
 
 Mathématiquement, la méthode repose sur la matrice de covariance (ou de corrélation), réelle et symétrique, que l’on diagonalise : ses vecteurs propres définissent les axes factoriels et ses valeurs propres mesurent l’inertie expliquée par chaque axe(notion détaillée plus loin) , ce qui fournit des combinaisons linéaires non corrélées restituant l’essentiel de la structure des données.
@@ -523,7 +524,7 @@ Nous allons mettre en œuvre deux méthodes de clustering (k‑means et classifi
 Pour ce faire, nous déterminerons, pour chacune de ces méthodes, le nombre de classes à retenir afin d’obtenir un partitionnement aussi pertinent que possible.
 Il existe différents critères pour choisir le nombre optimal de classes : R-Square, l'indice de Calinski‑Harabasz, coefficient de silhouette, statistique du Gap, etc. 
  
-## Méthode Kmeans
+## Méthode K-means
 
 ### Choix du nombre de classes
 
@@ -586,12 +587,11 @@ gg2
 ```
 Pour confirmer notre choix de k, le nombre de clusters, on fait appel à la méthode de silhouette (voir @fig-evol).
 
-Nous observons un maximum de l’indice de silhouette pour k=
-3, valeur cohérente avec les résultats obtenus précédemment à partir de l’évolution de l’inertie intraclasse.
+Nous observons un maximum de l’indice de silhouette pour $k = 3$, valeur cohérente avec les résultats obtenus précédemment à partir de l’évolution de l’inertie intraclasse.
 Pour conclure, le diagramme de la @fig-sil montre que très peu d’individus ont une silhouette négative, ce qui correspond à des points mal classés. Cela confirme la pertinence d’une partition en trois clusters
 
 
-### K-means: classification non supervisée avec k=3 fixé
+### K-means: classification non supervisée avec $k = 3$ fixé
 
 
  
@@ -617,22 +617,20 @@ fviz_cluster(reskmeansFORGY,
 ```
 
 ```{r}
+#| label: tbl-15
 #| layout-ncol: 2
-#| tbl-cap: ""
-#| label: tbl-tables
+#| tbl-cap: "Répartition des clusters selon le niveau (gauche) et le sexe (droite)"
+#| caption-location: bottom
+
 set.seed(2)
 tab_niveau <- table(reskmeansFORGY$cluster, gym$level)
 rownames(tab_niveau) <- paste("Cluster", rownames(tab_niveau))
-knitr::kable(
-  tab_niveau,
-  caption = "Répartition des clusters \n selon le niveau")
+knitr::kable(  tab_niveau)
 
 tab_sexe <- table(reskmeansFORGY$cluster, gym$gender)
 rownames(tab_sexe) <- paste("Cluster", rownames(tab_sexe))
 
-knitr::kable(
-  tab_sexe,
-  caption = "Répartition des clusters \n selon le sexe")
+knitr::kable( tab_sexe)
 
 ```
 
@@ -647,13 +645,13 @@ chordDiagram(table(clust,gym[,1]))
 table_level_gender <- table(gym$level, gym$gender)
 table_level_gender
 ```
-Pour la suite de l’analyse, nous fixons le nombre de clusters à k=3 et appliquons l’algorithme des k‑means selon la méthode des centres mobiles, afin de minimiser l’inertie intraclasse et de regrouper des individus aussi proches que possible du centre de leur cluster.
+Pour la suite de l’analyse, nous fixons le nombre de clusters à $k = 3$ et appliquons l’algorithme des k‑means selon la méthode des centres mobiles, afin de minimiser l’inertie intraclasse et de regrouper des individus aussi proches que possible du centre de leur cluster.
 
 La projection des résultats sur le plan factoriel de l’ACP (@fig-clustacp) montre trois groupes bien distincts, chacun occupant une zone différente de l’espace des composantes principales.
 Nous observons que certains clusters occupent des régions plus compactes et homogènes, tandis qu’un autre présente une dispersion un peu plus marquée,  traduisant une plus grande hétérogénéité des profils.
 
 Le cluster 1 est exclusivement composé d’hommes et ne contient aucun individu de niveau expert. 
-Le cluster 2 est, au contraire, fortement associé au niveau expert (@tbl-tables): il regroupe les 90 femmes expertes et 140 hommes, ce qui correspond à l’ensemble des individus de niveau expert (101) ainsi qu’à une partie des débutants et intermédiaires.
+Le cluster 2 est, au contraire, fortement associé au niveau expert (@tbl-15): il regroupe les 90 femmes expertes et 140 hommes, ce qui correspond à l’ensemble des individus de niveau expert (101) ainsi qu’à une partie des débutants et intermédiaires.
 Le troisième cluster rassemble les profils restants, femmes et hommes de niveau intermédiaire ou débutant.
 
 
@@ -691,7 +689,7 @@ plot(hclustaverage,labels=FALSE,hang=-1)
 #La @fig-20 permet de visualiser 3 dendogrammes utilisant chacun un type de lien différent. Nous pouvons voir dans ces différents dendrogramme que le meilleur lien est le lien moyen.
 ```
 
-Nous avons retenu la méthode de Ward. Contrairement aux méthodes de liens classiques, elle ne se base pas uniquement sur la distance entre points. L'objectif de cette méthode est de limiter au maximum l'inertie intraclasse à chaque regroupement. Progressivement, les objets sont agglomérés les uns aux autres en respectant ce critère jusqu’à ce que le nombre de cluster souhaité soit atteint. Cette méthode est souvent utilisée car elle permet de creer des groupes homogènes.
+Nous avons retenu la méthode de Ward. Contrairement aux méthodes de liens classiques, elle ne se base pas uniquement sur la distance entre points. L'objectif de cette méthode est de limiter au maximum l'inertie intraclasse à chaque regroupement. Progressivement, les objets sont agglomérés les uns aux autres en respectant ce critère jusqu’à ce que le nombre de clusters souhaité soit atteint. Cette méthode est souvent utilisée car elle permet de créer des groupes homogènes.
 
 ```{r}
 #| echo: false
@@ -702,19 +700,19 @@ hward<-hclust(dist(gymq), method = "ward.D2", members = NULL)
 plot(hward,labels=FALSE,main = NULL,sub = "",xlab = "Individus",ylab = "Distance (Inertie)",hang=-1)
 
 ```
-La @fig-21 présente un dendrogramme issu d’un clustering hiérarchique utilisant la méthode de Ward. L’axe vertical représente l’inertie intra‑classes Nous observons que les branches sont relativement équilibrées, ce qui est cohérent avec le fonctionnement de la méthode de Ward, qui cherche à minimiser l’augmentation de variance à chaque étape.
+La @fig-21 présente un dendrogramme issu d’un clustering hiérarchique utilisant la méthode de Ward. L’axe vertical représente l’inertie intraclasses. Nous observons que les branches sont relativement équilibrées, ce qui est cohérent avec le fonctionnement de la méthode de Ward, qui cherche à minimiser l’augmentation de variance à chaque étape.
 
 Plus nous choisissons un nombre de classes élevé (les fusions se font à faible hauteur), plus les clusters obtenus sont homogènes mais peu distincts. À l’inverse, un nombre de classes plus faible (fusions à grande hauteur) conduit à des clusters plus hétérogènes mais mieux séparés.
 
 Le choix du nombre de classes est donc essentiel pour une interprétation pertinente du clustering.
 
-### Choix de nombre de classes
+### Choix du nombre de classes
  
 Nous allons utiliser l'indice de la Silhouette et celui de Calinski-Harabasz.
 
 
 ```{r}
-#| fig-cap: "Comparaison des critères CH et silhouette pour le choix de k"
+#| fig-cap: "Comparaison des critères Calinski-Harabasz et silhouette pour le choix de k"
 #| label: "fig-222"
 
 Kmax<-20
@@ -802,11 +800,11 @@ knitr::kable(table(gym$gender, clusters))
 
 La @fig-l22 présente une série de diagrammes en violon illustrant la distribution des variables quantitatives au sein des cinq classes issues du clustering. La @tbl-3 expose, quant à elle, la répartition des variables qualitatives par profil. Ce partitionnement en cinq groupes permet de distinguer nettement des profils comportementaux et morphologiques différenciés. 
 
-La Classe 1 se détache par une activité physique intense (durée et calories élevées) associée à un régime faible en graisses, elle comprend une majorité d'hommes. 
+La Classe 1 se détache par une activité physique intense (durée et calories élevées) associée à un régime faible en graisses, et comprend une majorité d'hommes. 
 
 La Classe 5 regroupe les individus dont l'activité est un peu moins élevé que la classe 1 mais dont le niveau est le plus proche, tandis que la Classe 4 identifie les profils les moins actifs. 
 
-Les classes 2 et 3 représentent des profils intermédiaires plus proches de la moyenne globale, la classe 2 se distinguant par une parfaite mixité homme-femme.
+Les classes 2 et 3 représentent des profils intermédiaires, plus proches de la moyenne globale. La classe 2 se distingue d'ailleurs par une parfaite mixité homme-femme.
 
 
 ## comparaison des méthodes de clustering
@@ -814,6 +812,7 @@ Les classes 2 et 3 représentent des profils intermédiaires plus proches de la 
 ```{r}
 #| label: tbl-4
 #| tbl-cap: "Croisement entre cah (lignes) et kmeans (colonnes)"
+#| caption-location: bottom
 
 
 clust<-paste("Cl-K",reskmeansFORGY$cluster,sep="")
@@ -840,21 +839,14 @@ ggplot(Tab,aes(y=value,axis1=clust,axis2=a))+
 
 ```
 
-La méthode de k‑means et la classification hiérarchique ascendante avec le critère de Ward sont deux approches de clustering largement utilisées pour regrouper des données numériques. La méthode de k‑means nécessite de fixer le nombre de clusters à l’avance et vise à minimiser l’inertie intra‑classe. Elle est rapide et adaptée aux grands jeux de données, mais sensible à l’initialisation et suppose des clusters de forme compacte.
+La méthode de k‑means et la classification hiérarchique ascendante avec le critère de Ward sont deux approches de clustering largement utilisées pour regrouper des données numériques. La méthode de k‑means nécessite de fixer le nombre de clusters à l’avance et vise à minimiser l’inertie intraclasse. Elle est rapide et adaptée aux grands jeu de données, mais sensible à l’initialisation et suppose des clusters de forme compacte.
 
-La classification hiérarchique avec la méthode de Ward repose, au contraire, sur la fusion progressive des clusters en minimisant l’augmentation de l’inertie intra‑classe. Elle fournit un dendrogramme permettant de choisir le nombre de clusters a posteriori et offre une meilleure interprétabilité, au prix d’un coût computationnel plus élevé. Les deux méthodes reposent sur des critères similaires et peuvent être utilisées de manière complémentaire, la méthode de Ward pour l’analyse exploratoire et k‑means pour la partition finale.
+La classification hiérarchique avec la méthode de Ward repose, au contraire, sur la fusion progressive des clusters en minimisant l’augmentation de l’inertie intraclasse. Elle fournit un dendrogramme permettant de choisir le nombre de clusters a posteriori et offre une meilleure interprétabilité, au prix d’un coût computationnel plus élevé. Les deux méthodes reposent sur des critères similaires et peuvent être utilisées de manière complémentaire, la méthode de Ward pour l’analyse exploratoire et k‑means pour la partition finale.
 
 Le tableau de croisement entre les deux partitions montre que les clusters 1 et 5 de la classification hiérarchique regroupent la majorité des individus du cluster 2 obtenu par k‑means (98 et 101 observations), ce qui traduit une bonne stabilité de ce groupe entre les deux méthodes. À l’inverse, le cluster 3 de k‑means est réparti principalement entre les clusters 2, 3 et 4 de la méthode de Ward, qui en propose une découpe plus fine. Le cluster 1 de k‑means apparaît enfin comme le plus hétérogène, étant éclaté sur plusieurs clusters hiérarchiques, ce qui suggère une structure moins nette pour ce groupe.
 
 # Conclusion
 
-Ce rapport met en évidence des profils d’adhérents différenciés en termes de morphologie, de niveau d’activité et de comportements (durée, calories, eau). L’analyse descriptive confirme des relations attendues, comme la forte liaison entre poids et IMC ou entre durée d’entraînement et calories brûlées.​
-
-L’ACP fournit une représentation synthétique de ces profils dans un espace factoriel de dimension réduite, en séparant notamment les individus à forte dépense énergétique de ceux présentant un pourcentage de masse grasse plus élevé. Les méthodes de clustering, k‑means et classification hiérarchique de Ward, révèlent des groupes d’individus cohérents, certains clusters étant très stables d’une méthode à l’autre, ce qui renforce la robustesse des conclusions.​
-
-Au final, la combinaison de ces approches offre une vue d’ensemble claire de la population étudiée et constitue une base solide pour d’éventuelles analyses complémentaires ou recommandations pratiques
-
-OU BIEN PLUS SIMPLE : 
-Ce rapport montre que les adhérents de la salle de sport se distinguent par des profils bien différenciés, à la fois sur le plan morphologique (poids, IMC, masse grasse) et sur leurs habitudes d’entraînement (durée des séances, calories brûlées, consommation d’eau). L’analyse descriptive met en évidence des relations cohérentes avec la physiologie de l’effort, comme la forte corrélation entre durée et calories ou entre poids et IMC.​
+Notre rapport montre que les adhérents de la salle de sport se distinguent par des profils bien différenciés, à la fois sur le plan morphologique (poids, IMC, masse grasse) et sur leurs habitudes d’entraînement (durée des séances, calories brûlées, consommation d’eau). L’analyse descriptive met en évidence des relations cohérentes avec la physiologie de l’effort, comme la forte corrélation entre durée et calories ou entre poids et IMC.​
 
 L’ACP résume efficacement cette information en quelques axes factoriels, qui opposent notamment des profils très engagés dans l’entraînement à des profils aux séances plus modérées et présentant une masse grasse plus élevée. Enfin, les méthodes de clustering non supervisé, k‑means et classification hiérarchique, identifient des groupes d’individus homogènes dont les caractéristiques (niveau, genre, intensité des séances) reflètent bien la diversité des pratiques au sein de la salle de sport.
