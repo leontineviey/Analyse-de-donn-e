@@ -689,7 +689,7 @@ plot(hclustaverage,labels=FALSE,hang=-1)
 #La @fig-20 permet de visualiser 3 dendogrammes utilisant chacun un type de lien différent. Nous pouvons voir dans ces différents dendrogramme que le meilleur lien est le lien moyen.
 ```
 
-Nous avons retenu la méthode de Ward. Contrairement aux méthodes de liens classiques, elle ne se base pas uniquement sur la distance entre points. L'objectif de cette méthode est de limiter au maximum l'inertie intraclasse à chaque regroupement. Progressivement, les objets sont agglomérés les uns aux autres en respectant ce critère jusqu’à ce que le nombre de clusters souhaité soit atteint. Cette méthode est souvent utilisée car elle permet de créer des groupes homogènes.
+Nous  retenons la méthode de Ward. Contrairement aux méthodes de liens classiques, elle ne se base pas uniquement sur la distance entre points. L'objectif de cette méthode est de limiter au maximum l'inertie intraclasse à chaque regroupement. Progressivement, les objets sont agglomérés les uns aux autres en respectant ce critère jusqu’à ce que le nombre de clusters souhaité soit atteint. Cette méthode est souvent utilisée car elle permet de créer des groupes homogènes.
 
 ```{r}
 #| echo: false
