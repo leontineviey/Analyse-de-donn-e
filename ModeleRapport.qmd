@@ -36,7 +36,6 @@ library(forcats)
 library(mclust)
 library(cluster)
 library(ppclust)
-
 library(circlize)
 library(ggalluvial)
 gym <- read.table("DataGym3MIC.txt",header=TRUE)
@@ -58,18 +57,19 @@ Le jeu de données que nous allons étudier dans ce rapport contient des variabl
 quantitatives discrètes (*duration*,*water* et *calories*) ou continues (*weight*,*height*,*fat* et *bmi*).
 Nous avons tout d'abord défini les variables qualitatives manuellement sur R avec *as.factor*.
 
-Vous pouvez retrouver, dans ce tableau, un résumé de chacune des 9 variables du jeu de données:
+Vous pouvez retrouver dans la @tbl-f un résumé de chacune des 9 variables du jeu de données:
 
 \scriptsize
 
 ```{r}
 #| echo: false
+#| label: tbl-f
+#| tbl-cap: "Résumé statistique des membres de la salle de sport"
 
-gym$gender<-as.factor(gym$gender)
-gym$level<-factor(gym$level,labels=c("débutant","intermédiaire","expert"))
-summary(gym)
+gym$gender <- as.factor(gym$gender)
+gym$level <- factor(gym$level, labels = c("Débutant", "Intermédiaire", "Expert"))
 
-levels(gym$level) <- c("Débutant", "Intermédiaire", "Expert")
+kable(summary(gym))
 
 
 
@@ -788,6 +788,9 @@ ggplot(df,aes(x=variable,y=value))+
 #| echo: false
 #| label: tbl-3
 #| tbl-cap: "Répartition des individus dans les classes par niveau et par genre"
+#| tbl-subcap: 
+#|   - "Répartition par niveau de pratique"
+#|   - "Répartition par genre"
 #| layout-ncol: 2
 #| caption-location: bottom
 
@@ -797,6 +800,7 @@ knitr::kable(table(gym$level, clusters))
 knitr::kable(table(gym$gender, clusters))
 ```
 
+\newpage
 
 La @fig-l22 présente une série de diagrammes en violon illustrant la distribution des variables quantitatives au sein des cinq classes issues du clustering. La @tbl-3 expose, quant à elle, la répartition des variables qualitatives par profil. Ce partitionnement en cinq groupes permet de distinguer nettement des profils comportementaux et morphologiques différenciés. 
 
