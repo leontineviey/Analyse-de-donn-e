@@ -154,6 +154,7 @@ Sur l'histogramme de densité de la @fig-3, nous pouvons observer que la majorit
 #| echo: false
 #| eval: false
 #| fig-cap: "Historigramme représentant la répartition des calories"
+#| fig-height: 5
 #| label: "fig-3b"
 ggplot(gym,aes(x=calories))+
   geom_histogram(aes(y=..density..),bins=15,color="black", fill="skyblue")+
@@ -759,6 +760,7 @@ Le premier graphique est obtenu grâce au critère de silhouette. Pour choisir l
 Le deuxième graphique est obtenu grâce à l'indice de Calinski-Harabasz. Pour ce critère, nous recherchons généralement un pic ou un "coude" marqué sur la courbe. Un coude très net est visible à $k = 5$. Après ce point, la courbe s'aplatit : l'augmentation du score devient beaucoup plus lente par rapport à la complexité ajoutée au modèle.
 Nous avons donc choisi de retenir $k = 5$, car il représente le meilleur compromis entre les deux critères. En effet, bien que $k = 2$ soit optimal pour la silhouette, une telle analyse resterait binaire et trop simpliste pour l'interprétation de nos données.
 
+
 ```{r}
 #| echo: false
 #| eval: false
@@ -796,8 +798,16 @@ clusters <- cutree(hward, k = 5)
 knitr::kable(table(gym$level, clusters))
 knitr::kable(table(gym$gender, clusters))
 ```
-La @fig-l22 présente une série de diagrammes en violon illustrant la distribution des variables quantitatives au sein des cinq classes issues du clustering. La @tbl-3 expose, quant à elle, la répartition des variables qualitatives par profil. Ce partitionnement en cinq groupes permet de distinguer nettement des profils comportementaux et morphologiques différenciés. La Classe 1 se détache par une activité physique intense (durée et calories élevées) associée à un régime faible en graisses, elle comprend une majorité d'hommes. La Classe 5 regroupe les individus dont l'activité est un peu moins élevé que la classe 1 mais dont le niveau est le plus proche, tandis que la Classe 4 identifie les profils les moins actifs. Les classes 2 et 3 représentent des profils intermédiaires plus proches de la moyenne globale, la classe 2 se distinguant par une parfaite mixité homme-femme.
-\newpage
+
+
+La @fig-l22 présente une série de diagrammes en violon illustrant la distribution des variables quantitatives au sein des cinq classes issues du clustering. La @tbl-3 expose, quant à elle, la répartition des variables qualitatives par profil. Ce partitionnement en cinq groupes permet de distinguer nettement des profils comportementaux et morphologiques différenciés. 
+
+La Classe 1 se détache par une activité physique intense (durée et calories élevées) associée à un régime faible en graisses, elle comprend une majorité d'hommes. 
+
+La Classe 5 regroupe les individus dont l'activité est un peu moins élevé que la classe 1 mais dont le niveau est le plus proche, tandis que la Classe 4 identifie les profils les moins actifs. 
+
+Les classes 2 et 3 représentent des profils intermédiaires plus proches de la moyenne globale, la classe 2 se distinguant par une parfaite mixité homme-femme.
+
 
 ## comparaison des méthodes de clustering
 
